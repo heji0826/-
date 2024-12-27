@@ -15,7 +15,7 @@
         <div class="container">
             <h1>관리자 게시판</h1>
             <% if ("admin".equals(session.getAttribute("role"))) { %>
-                <a href="/web/write_post.jsp">글쓰기</a>
+                <a href="/web/board/write_post.jsp">글쓰기</a>
             <% } %>
             <table border="1">
                 <tr>

@@ -12,7 +12,7 @@
     <div class="main-content">
         <div class="container">
             <h1>회원 게시판</h1>
-            <a href="/web/write_post.jsp" class="button">글쓰기</a>
+            <a href="/web/board/write_post.jsp" class="button">글쓰기</a>
             <table border="1" class="table">
                 <tr>
                     <th>번호</th>
