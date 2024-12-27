@@ -5,14 +5,11 @@
     int postId = Integer.parseInt(request.getParameter("id"));
     String boardType = "user";
 
-    if ("admin".equals(session.getAttribute("role"))) {
-        boardType = "admin";
-    }
-
     PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + boardType + "_posts WHERE post_id = ?");
     stmt.setInt(1, postId);
     ResultSet rs = stmt.executeQuery();
 %>
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -63,7 +60,10 @@
                     <td><%= commentRs.getString("nickname") %></td>
                     <td><%= commentRs.getString("content") %></td>
                     <td><%= commentRs.getTimestamp("created_at") %></td>
-                    <% if ("admin".equals(session.getAttribute("role")) || session.getAttribute("username").equals(commentRs.getString("nickname"))) { %>
+                    <% 
+                        if ("admin".equals(session.getAttribute("role")) || 
+                            (session.getAttribute("username") != null && session.getAttribute("username").equals(commentRs.getString("nickname")))) { 
+                    %>
                         <td>
                             <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>">삭제</a>
                         </td>
