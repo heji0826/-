@@ -1,6 +1,8 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
+    request.setCharacterEncoding("UTF-8");
+
     String username = request.getParameter("username");
     String securityQuestion = request.getParameter("security_question");
     String securityAnswer = request.getParameter("security_answer");
@@ -17,12 +19,14 @@
         rs = stmt.executeQuery();
 
         if (rs.next()) {
-            out.println("<p>아이디: " + rs.getString("username") + "</p>");
-            out.println("<p>비밀번호: " + rs.getString("password") + "</p>");
+            session.setAttribute("username", rs.getString("username"));
+            session.setAttribute("password", rs.getString("password"));
+            response.sendRedirect("../find_password.jsp");
         } else {
-            out.println("<p>입력한 정보가 일치하지 않습니다.</p>");
+            response.sendRedirect("../forgot_password_error.jsp");
         }
     } catch (Exception e) {
+        e.printStackTrace();
         out.println("에러: " + e.getMessage());
     } finally {
         if (rs != null) rs.close();
