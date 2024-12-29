@@ -4,6 +4,8 @@
 <%@ page import="java.io.File" %>
 <%@ page import="java.util.List" %>
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
+<%@ page import="java.io.StringWriter" %>
+<%@ page import="java.io.PrintWriter" %>
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
@@ -63,7 +65,7 @@
                 item.write(uploadedFile);  // 파일 업로드
 
                 // 디버깅: 업로드된 파일 경로 출력
-                out.println("업로드 디렉토리 경로: " + uploadedFile.getAbsolutePath());
+                log("업로드 디렉토리 경로: " + uploadedFile.getAbsolutePath());
             }
         }
 
@@ -97,7 +99,14 @@
         }
     } catch (Exception e) {
         // 예외 처리
-        out.println("파일 업로드 또는 게시물 등록에 실패했습니다.");
-        log("파일 업로드 또는 DB 처리 중 오류 발생: " + e.getMessage());
+        log("파일 업로드 또는 게시물 등록에 실패했습니다. 오류: " + e.getMessage());
+
+        // 스택 트레이스 문자열로 변환
+        StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw));
+        String stackTrace = sw.toString();
+        
+        out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류 스택 트레이스:");
+        out.println(stackTrace);  // 자세한 오류 정보 출력
     }
 %>

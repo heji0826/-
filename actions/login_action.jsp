@@ -15,7 +15,9 @@
         rs = stmt.executeQuery();
 
         if (rs.next()) {
+            boolean isAdmin = rs.getBoolean("is_admin");
             session.setAttribute("username", username);
+            session.setAttribute("is_admin", isAdmin);
             response.sendRedirect("../index.jsp");
         } else {
             out.println("<p>로그인 실패! 아이디 또는 비밀번호를 확인하세요.</p>");
