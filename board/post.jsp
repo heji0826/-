@@ -11,12 +11,12 @@
 
     String query = "";
     if ("admin".equals(boardType)) {
-        query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " + 
+        query = "SELECT u.user_id, ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " + 
                 "FROM admin_posts ap " +
                 "JOIN users u ON ap.user_id = u.user_id " + 
                 "WHERE ap.post_id = ?";
     } else {
-        query = "SELECT up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " + 
+        query = "SELECT u.user_id, up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " + 
                 "FROM user_posts up " + 
                 "JOIN users u ON up.user_id = u.user_id " + 
                 "WHERE up.post_id = ?";
@@ -86,6 +86,36 @@
                     </p>
                 <% } %>
             <% } %>
+            <%
+                int userId = 0;
+                if (username != null) {
+                    PreparedStatement userStmt = conn.prepareStatement("SELECT user_id FROM users WHERE username = ?");
+                    userStmt.setString(1, username);
+                    ResultSet userRs = userStmt.executeQuery();
+                    if (userRs.next()) {
+                        userId = userRs.getInt("user_id");
+                    }
+                    userRs.close();
+                    userStmt.close();
+                }
+
+                    // rs에서 가져온 user_id와 userId가 같으면 수정, 삭제 버튼을 보여줌
+                    if (rs.getInt("user_id") == userId) {
+                %>
+                    <form action="../board/edit_post.jsp" method="post" style="display: inline-block; margin-right: 10px;">
+                        <input type="hidden" name="id" value="<%= postId %>">
+                        <input type="hidden" name="boardType" value="<%= boardType %>">
+                        <button type="submit">수정</button>
+                    </form>
+                    <form action="../actions/delete_post_action.jsp" method="post" style="display: inline-block;">
+                        <input type="hidden" name="postId" value="<%= postId %>">
+                        <input type="hidden" name="boardType" value="<%= boardType %>">
+                        <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
+                    </form>
+            <%
+                }
+            %>
+
             <hr>
             <h3>댓글</h3>
             <form action="../actions/add_comment_action.jsp" method="post">
