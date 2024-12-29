@@ -20,7 +20,8 @@
                 <th>가입일</th>
                 <th>유형</th>
                 <th>회원 삭제</th>
-            </tr>
+            	<th>상세 정보</th>
+	    </tr>
             <%
                 if (conn != null) {
                     Statement stmt = conn.createStatement();
@@ -30,8 +31,8 @@
             %>
             <tr>
                 <td><%= rs.getInt("user_id") %></td>
-                <td><%= rs.getString("username") %></td>
-                <td><%= rs.getString("nickname") %></td>
+		<td><%= rs.getString("username") %></td>
+		<td><%= rs.getString("nickname") %></td>
                 <td><%= rs.getString("email") %></td>
                 <td><%= rs.getTimestamp("created_at") %></td>
                 <td>
@@ -56,7 +57,10 @@
                         }
                     %>
                 </td>
-            </tr>
+                <td>
+                    <a href="/web/admin/user_info.jsp?user_id=<%= rs.getInt("user_id") %>" class="button">조회</a>
+                </td> 
+	    </tr>
             <%
                     }
                     rs.close();
