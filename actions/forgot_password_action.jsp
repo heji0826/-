@@ -1,4 +1,6 @@
 <%@ include file="../db/db_connection.jsp" %>
+<%@ page import="java.net.URLDecoder" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setCharacterEncoding("UTF-8");
@@ -19,8 +21,9 @@
         rs = stmt.executeQuery();
 
         if (rs.next()) {
-            session.setAttribute("username", rs.getString("username"));
-            session.setAttribute("password", rs.getString("password"));
+            String user_name = rs.getString("username");
+            String pass_word = rs.getString("password");
+            response.sendRedirect("../find_password.jsp?user_name=" + URLEncoder.encode(user_name, "UTF-8") + "&pass_word=" + URLEncoder.encode(pass_word, "UTF-8"));
             response.sendRedirect("../find_password.jsp");
         } else {
             response.sendRedirect("../forgot_password_error.jsp");
