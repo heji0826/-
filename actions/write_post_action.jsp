@@ -8,16 +8,20 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setCharacterEncoding("UTF-8");
+
+    // 폼 값들
     String title = null;
     String content = null;
     String nickname = null;
     String fileName = null;
-    String boardType = "user";
 
-    if ("admin".equals(session.getAttribute("role"))) {
-        boardType = "admin";
+    // 게시판 종류 설정 (user 또는 admin)
+    String boardType = request.getParameter("boardType");  // user_board.jsp 또는 admin_board.jsp에서 전달된 값
+    if (boardType == null) {
+        boardType = "user";  // 기본값은 user로 설정
     }
 
+    // 사용자 정보
     String username = (String) session.getAttribute("username");
     if (username == null) {
         response.sendRedirect("/web/login.jsp");
@@ -49,13 +53,14 @@
                     content = item.getString("UTF-8");
                 }
             } else {
+                // 파일이 있을 경우 파일 처리
                 fileName = new File(item.getName()).getName();
                 File uploadDir = new File(getServletContext().getRealPath("/") + "uploads/");
                 if (!uploadDir.exists()) {
                     uploadDir.mkdirs();
                 }
-                File uploadedFile = new File(uploadDir + fileName);
-                item.write(uploadedFile);
+                File uploadedFile = new File(uploadDir + "/" + fileName);
+                item.write(uploadedFile);  // 파일 업로드
 
                 // 디버깅: 업로드된 파일 경로 출력
                 out.println("업로드 디렉토리 경로: " + uploadedFile.getAbsolutePath());
@@ -65,11 +70,19 @@
         // 게시물 정보 DB에 삽입
         Integer userId = (Integer) session.getAttribute("user_id");
 
-        // INSERT 쿼리
-        PreparedStatement stmt = conn.prepareStatement("INSERT INTO " + boardType + "_posts (title, content, attachment_path, created_at, updated_at, user_id, nickname) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        // 게시판 종류에 맞는 테이블에 삽입 (user_posts 또는 admin_posts)
+        String insertQuery = "";
+        if ("admin".equals(boardType)) {
+            insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id, nickname) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        } else {
+            insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id, nickname) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        }
+
+        // INSERT 쿼리 실행
+        PreparedStatement stmt = conn.prepareStatement(insertQuery);
         stmt.setString(1, title);
         stmt.setString(2, content);
-        stmt.setString(3, fileName);  // 파일 이름만 삽입
+        stmt.setString(3, fileName);  // 파일 경로 저장
         stmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));  // created_at
         stmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));  // updated_at
         stmt.setInt(6, userId);  // user_id
@@ -83,9 +96,8 @@
             response.sendRedirect("user_board.jsp");
         }
     } catch (Exception e) {
-        // 디버깅
-        out.println("업로드 디렉토리 경로: " + e.getMessage());
-        log("파일 업로드 또는 DB 처리 중 오류 발생: " + e.getMessage());
+        // 예외 처리
         out.println("파일 업로드 또는 게시물 등록에 실패했습니다.");
+        log("파일 업로드 또는 DB 처리 중 오류 발생: " + e.getMessage());
     }
 %>

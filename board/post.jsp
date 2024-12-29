@@ -3,9 +3,26 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     int postId = Integer.parseInt(request.getParameter("id"));
-    String boardType = "user";
+    String boardType = request.getParameter("boardType");
 
-    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM " + boardType + "_posts WHERE post_id = ?");
+    if (boardType == null) {
+        boardType = "user";  // 기본값을 "user"로 설정
+    }
+
+    String query = "";
+    if ("admin".equals(boardType)) {
+        query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " + 
+                "FROM admin_posts ap " +
+                "JOIN users u ON ap.user_id = u.user_id " + 
+                "WHERE ap.post_id = ?";
+    } else {
+        query = "SELECT up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " + 
+                "FROM user_posts up " + 
+                "JOIN users u ON up.user_id = u.user_id " + 
+                "WHERE up.post_id = ?";
+    }
+
+    PreparedStatement stmt = conn.prepareStatement(query);
     stmt.setInt(1, postId);
     ResultSet rs = stmt.executeQuery();
 %>
@@ -36,6 +53,7 @@
             <h3>댓글</h3>
             <form action="../actions/add_comment_action.jsp" method="post">
                 <input type="hidden" name="post_id" value="<%= postId %>">
+                <input type="hidden" name="board_type" value="<%= boardType %>">
                 댓글 내용: <textarea name="content" required></textarea><br>
                 <button type="submit">댓글 달기</button>
             </form>
@@ -49,11 +67,14 @@
                     <% } %>
                 </tr>
                 <%
-                    PreparedStatement commentStmt = conn.prepareStatement("SELECT * FROM comments WHERE post_id = ? AND board_type = ?");
+                    String commentTable = boardType.equals("admin") ? "admin_comments" : "user_comments";
+                    
+                    PreparedStatement commentStmt = conn.prepareStatement("SELECT c.comment_id, c.content, c.created_at, u.nickname " + 
+                                                                          "FROM " + commentTable + " c " + 
+                                                                          "JOIN users u ON c.user_id = u.user_id " +
+                                                                          "WHERE c.post_id = ?");
                     commentStmt.setInt(1, postId);
-                    commentStmt.setString(2, boardType);
                     ResultSet commentRs = commentStmt.executeQuery();
-
                     while (commentRs.next()) {
                 %>
                 <tr>

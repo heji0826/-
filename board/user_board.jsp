@@ -12,7 +12,7 @@
     <div class="main-content">
         <div class="container">
             <h1>회원 게시판</h1>
-            <a href="/web/board/write_post.jsp" class="button">글쓰기</a>
+            <a href="/web/board/write_post.jsp?boardType=user" class="button">글쓰기</a>
             <table border="1" class="table">
                 <tr>
                     <th>번호</th>
@@ -24,7 +24,9 @@
                 <%
                     if (conn != null) {
                         Statement stmt = conn.createStatement();
-                        ResultSet rs = stmt.executeQuery("SELECT * FROM user_posts");
+                        String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p "
+                                     + "JOIN users u ON p.user_id = u.user_id";
+                        ResultSet rs = stmt.executeQuery(query);
                         while (rs.next()) {
                 %>
                 <tr>
@@ -32,7 +34,7 @@
                     <td><%= rs.getString("title") %></td>
                     <td><%= rs.getString("nickname") %></td>
                     <td><%= rs.getTimestamp("created_at") %></td>
-                    <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>">보기</a></td>
+                    <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">보기</a></td>
                 </tr>
                 <%
                         }
@@ -43,9 +45,7 @@
                 <tr>
                     <td colspan="5">데이터베이스 연결에 실패했습니다.</td>
                 </tr>
-                <%
-                    }
-                %>
+                <% } %>
             </table>
         </div>
     </div>

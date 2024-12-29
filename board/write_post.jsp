@@ -1,4 +1,5 @@
 <%@ include file="../includes/header.jsp" %>
+<%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
@@ -12,6 +13,8 @@
         <div class="container">
             <h1>게시글 작성</h1>
             <form action="../actions/write_post_action.jsp" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="boardType" value="<%= request.getParameter("boardType") %>"> 
+
                 <label for="title">제목:</label>
                 <input type="text" id="title" name="title" required><br>
                 
