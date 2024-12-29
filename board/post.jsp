@@ -44,9 +44,14 @@
                 <p>작성일: <%= rs.getTimestamp("created_at") %></p>
                 <p><%= rs.getString("content") %></p>
                 <% 
-                if (rs.getString("attachment_path") != null) { 
+                String attachmentPath = rs.getString("attachment_path");
+                if (attachmentPath != null && !attachmentPath.isEmpty()) { 
                 %>
-                    <p>첨부파일: <a href="../uploads/<%= rs.getString("attachment_path") %>"><%= rs.getString("attachment_path") %></a></p>
+                    <p>첨부파일: 
+                        <a href="<%= request.getContextPath() %>/board/download.jsp?file=<%= attachmentPath %>">
+                            <%= attachmentPath %>
+                        </a>
+                    </p>
                 <% } %>
             <% } %>
             <hr>

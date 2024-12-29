@@ -16,6 +16,11 @@
     ResultSet userRs = null;
 
     try {
+        // 유효하지 않은 사용자일 경우
+        if (username == null) {
+            response.sendRedirect("/web/login.jsp");
+            return;
+        }
         // 사용자 닉네임 및 user_id 조회
         String nicknameQuery = "SELECT nickname, user_id FROM users WHERE username = ?";
         nicknameStmt = conn.prepareStatement(nicknameQuery);
@@ -51,7 +56,7 @@
             // 게시물 상세보기 페이지로 리디렉션
             response.sendRedirect("../board/post.jsp?id=" + postId + "&boardType=" + boardType);
         } else {
-            out.println("유효하지 않은 사용자입니다.");
+            response.sendRedirect("/web/login.jsp");
         }
     } catch (Exception e) {
         out.println("에러: " + e.getMessage());
