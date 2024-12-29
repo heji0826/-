@@ -12,7 +12,8 @@
     <div class="main-content">
         <div class="container">
             <h1>회원 게시판</h1>
-            <a href="/web/board/write_post.jsp?boardType=user" class="button">글쓰기</a>
+            <button class="button" onclick="window.location.href='/web/board/write_post.jsp?boardType=user'">글쓰기</button>
+            <br><br>
             <table border="1" class="table">
                 <tr>
                     <th>번호</th>

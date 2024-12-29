@@ -15,7 +15,9 @@
         rs = stmt.executeQuery();
 
         if (rs.next()) {
+            int userId = rs.getInt("user_id");
             boolean isAdmin = rs.getBoolean("is_admin");
+            session.setAttribute("user_id", userId);
             session.setAttribute("username", username);
             session.setAttribute("is_admin", isAdmin);
             response.sendRedirect("../index.jsp");

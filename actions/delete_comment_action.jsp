@@ -3,19 +3,17 @@
 <%
     int commentId = Integer.parseInt(request.getParameter("id"));
 
-    PreparedStatement stmt = null;
-
     try {
-        String query = "DELETE FROM comments WHERE id = ?";
-        stmt = conn.prepareStatement(query);
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM user_comments WHERE comment_id = ?");
         stmt.setInt(1, commentId);
         stmt.executeUpdate();
-
+        
+        // 댓글 삭제 후 리디렉션
         response.sendRedirect(request.getHeader("Referer"));
     } catch (Exception e) {
-        out.println("에러: " + e.getMessage());
+        e.printStackTrace();
+        out.println("삭제 중 오류가 발생했습니다.");
     } finally {
-        if (stmt != null) stmt.close();
         if (conn != null) conn.close();
     }
 %>
