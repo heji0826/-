@@ -42,8 +42,8 @@
                 %>
                 <tr>
                     <td><%= rs.getInt("post_id") %></td>
-                    <td><%= rs.getString("title") %></td>
-                    <td><%= rs.getString("content") %></td>
+                    <td><a href="../board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin"><%= rs.getString("title") %></a></td>                    
+		    <td><%= rs.getString("content") %></td>
                     <td><%= rs.getString("attachment_path") %></td>
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td><%= rs.getTimestamp("updated_at") %></td>
