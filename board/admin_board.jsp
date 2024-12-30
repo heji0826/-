@@ -20,6 +20,17 @@
             <% 
                 } 
             %>
+            <br>
+            <form method="get" action="" class="search-container">
+                <select name="searchField" class="search-select" required>
+                    <option value="title" <%= "title".equals(request.getParameter("searchField")) ? "selected" : "" %>>제목</option>
+                    <option value="nickname" <%= "nickname".equals(request.getParameter("searchField")) ? "selected" : "" %>>작성자</option>
+                    <option value="content" <%= "content".equals(request.getParameter("searchField")) ? "selected" : "" %>>내용</option>
+                </select>
+                <input type="text" name="search" class="search-input" placeholder="검색어를 입력하세요" value="<%= request.getParameter("search") != null ? request.getParameter("search") : "" %>" required>
+                <button type="submit" class="search-button">검색</button>
+            </form>
+            <br>
 
             <table border="1">
                 <tr>
@@ -32,8 +43,19 @@
                 <%
                     if (conn != null) {
                         Statement stmt = conn.createStatement();
-                        String query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname FROM admin_posts ap "
-                                     + "JOIN users u ON ap.user_id = u.user_id";
+                        String query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname " +
+                                        "FROM admin_posts ap " +
+                                        "JOIN users u ON ap.user_id = u.user_id ";
+
+                        // 검색 필드와 검색어 조건 추가
+                        String searchField = request.getParameter("searchField");
+                        String search = request.getParameter("search");
+                        if (searchField != null && search != null && !search.trim().isEmpty()) {
+                            query += "WHERE " + searchField + " LIKE '%" + search + "%' ";
+                        }
+
+                        // 정렬 조건 추가
+                        query += "ORDER BY ap.created_at DESC";
                         ResultSet rs = stmt.executeQuery(query);
                         while (rs.next()) {
                 %>
