@@ -1,6 +1,6 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-
+<%@ include file="./dashboard.jsp" %> 
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +11,8 @@
     <div class="admin-container">
         <div class="content">
             <h2>게시판 관리</h2>
-                <select id="boardType" name="boardType" required>
+            <form method="get" action="posts_dashboard.jsp">
+	    <select id="boardType" name="boardType" required>
                     <option value="user">일반 회원 게시판</option>
                     <option value="admin">관리자 게시판</option>
                 </select>
