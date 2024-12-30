@@ -23,12 +23,15 @@
                     <th>보기</th>
                 </tr>
                 <%
-                    if (conn != null) {
-                        Statement stmt = conn.createStatement();
-                        String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p "
-                                     + "JOIN users u ON p.user_id = u.user_id";
-                        ResultSet rs = stmt.executeQuery(query);
-                        while (rs.next()) {
+                    Statement stmt = null;
+                    ResultSet rs = null;
+                    try {
+                        if (conn != null) {
+                            stmt = conn.createStatement();
+                            String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p "
+                                         + "JOIN users u ON p.user_id = u.user_id";
+                            rs = stmt.executeQuery(query);
+                            while (rs.next()) {
                 %>
                 <tr>
                     <td><%= rs.getInt("post_id") %></td>
@@ -38,15 +41,21 @@
                     <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">보기</a></td>
                 </tr>
                 <%
-                        }
-                        rs.close();
-                        stmt.close();
-                    } else {
+                            }
+                        } else {
                 %>
                 <tr>
                     <td colspan="5">데이터베이스 연결에 실패했습니다.</td>
                 </tr>
-                <% } %>
+                <% 
+                        }
+                    } catch (Exception e) {
+                        out.println("<tr><td colspan='5'>오류: " + e.getMessage() + "</td></tr>");
+                    } finally {
+                        if (rs != null) rs.close();
+                        if (stmt != null) stmt.close();
+                    }
+                %>
             </table>
         </div>
     </div>

@@ -4,18 +4,17 @@
     int postId = Integer.parseInt(request.getParameter("postId"));
     String boardType = request.getParameter("boardType");
 
-    PreparedStatement stmt = null;
+    Statement stmt = null;
     try {
         String deleteQuery = "";
         if ("admin".equals(boardType)) {
-            deleteQuery = "DELETE FROM admin_posts WHERE post_id = ?";
+            deleteQuery = "DELETE FROM admin_posts WHERE post_id = " + postId;
         } else {
-            deleteQuery = "DELETE FROM user_posts WHERE post_id = ?";
+            deleteQuery = "DELETE FROM user_posts WHERE post_id = " + postId;
         }
 
-        stmt = conn.prepareStatement(deleteQuery);
-        stmt.setInt(1, postId);
-        int rowsAffected = stmt.executeUpdate();
+        stmt = conn.createStatement();
+        int rowsAffected = stmt.executeUpdate(deleteQuery);
 
         if (rowsAffected > 0) {
             // 게시물 삭제 후 게시판 목록으로 리디렉션

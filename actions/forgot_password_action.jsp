@@ -9,22 +9,20 @@
     String securityQuestion = request.getParameter("security_question");
     String securityAnswer = request.getParameter("security_answer");
 
-    PreparedStatement stmt = null;
+    Statement stmt = null;
     ResultSet rs = null;
 
     try {
-        String query = "SELECT username, password FROM users WHERE username = ? AND security_question = ? AND security_answer = ?";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, username);
-        stmt.setString(2, securityQuestion);
-        stmt.setString(3, securityAnswer);
-        rs = stmt.executeQuery();
+        String query = "SELECT username, password FROM users WHERE username = '" + username + 
+                       "' AND security_question = '" + securityQuestion + 
+                       "' AND security_answer = '" + securityAnswer + "'";
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery(query);
 
         if (rs.next()) {
             String user_name = rs.getString("username");
             String pass_word = rs.getString("password");
             response.sendRedirect("../find_password.jsp?user_name=" + URLEncoder.encode(user_name, "UTF-8") + "&pass_word=" + URLEncoder.encode(pass_word, "UTF-8"));
-            response.sendRedirect("../find_password.jsp");
         } else {
             response.sendRedirect("../forgot_password_error.jsp");
         }

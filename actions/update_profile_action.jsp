@@ -11,26 +11,22 @@
     String securityAnswer = request.getParameter("security_answer");
     String password = request.getParameter("password");
 
-    PreparedStatement stmt = null;
+    Statement stmt = null;
 
     try {
-        String query = "UPDATE users SET name = ?, email = ?, nickname = ?, phone = ?, security_question = ?, security_answer = ?"
-                     + (password != null && !password.isEmpty() ? ", password = ?" : "")
-                     + " WHERE username = ?";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, name);
-        stmt.setString(2, email);
-        stmt.setString(3, nickname);
-        stmt.setString(4, phone);
-        stmt.setString(5, securityQuestion);
-        stmt.setString(6, securityAnswer);
+        String query = "UPDATE users SET name = '" + name + 
+                       "', email = '" + email + 
+                       "', nickname = '" + nickname + 
+                       "', phone = '" + phone + 
+                       "', security_question = '" + securityQuestion + 
+                       "', security_answer = '" + securityAnswer + "'";
         if (password != null && !password.isEmpty()) {
-            stmt.setString(7, password);
-            stmt.setString(8, username);
-        } else {
-            stmt.setString(7, username);
+            query += ", password = '" + password + "'";
         }
-        stmt.executeUpdate();
+        query += " WHERE username = '" + username + "'";
+
+        stmt = conn.createStatement();
+        stmt.executeUpdate(query);
         response.sendRedirect("../profile.jsp");
     } catch (Exception e) {
         out.println("에러: " + e.getMessage());

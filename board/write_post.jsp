@@ -3,6 +3,9 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String boardType = request.getParameter("boardType");
+    if (boardType == null || boardType.isEmpty()) {
+        boardType = "user"; // 기본 게시판 타입 설정
+    }
 %>
 <!DOCTYPE html>
 <html>
@@ -16,7 +19,7 @@
         <div class="container">
             <h1>게시글 작성</h1>
             <form action="../actions/write_post_action.jsp" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="boardType" value="<%= request.getParameter("boardType") %>"> 
+                <input type="hidden" name="boardType" value="<%= boardType %>">
 
                 <label for="title">제목:</label>
                 <input type="text" id="title" name="title" required><br>

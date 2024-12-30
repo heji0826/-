@@ -9,9 +9,9 @@
         return; // 이후 코드를 실행하지 않음
     }
 
-    PreparedStatement stmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
-    stmt.setString(1, usernameFromSession);
-    ResultSet rs = stmt.executeQuery();
+    Statement stmt = conn.createStatement();
+    String query = "SELECT * FROM users WHERE username = '" + usernameFromSession + "'";
+    ResultSet rs = stmt.executeQuery(query);
 %>
 <!DOCTYPE html>
 <html>
@@ -54,9 +54,15 @@
                 
                 <button type="submit" class="button">수정하기</button>
             </form>
+            <% } else { %>
+                response.sendRedirect("login.jsp");
             <% } %>
         </div>
     </div>
 </div>
 </body>
 </html>
+<%
+    rs.close();
+    stmt.close();
+%>

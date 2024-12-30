@@ -4,15 +4,13 @@
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
-    PreparedStatement stmt = null;
+    Statement stmt = null;
     ResultSet rs = null;
 
     try {
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, username);
-        stmt.setString(2, password);
-        rs = stmt.executeQuery();
+        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery(query);
 
         if (rs.next()) {
             int userId = rs.getInt("user_id");

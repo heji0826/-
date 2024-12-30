@@ -11,20 +11,13 @@
     String securityQuestion = request.getParameter("security_question");
     String securityAnswer = request.getParameter("security_answer");
 
-    PreparedStatement stmt = null;
+    Statement stmt = null;
 
     try {
-        String query = "INSERT INTO users (name, username, password, email, nickname, phone, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, name);
-        stmt.setString(2, username);
-        stmt.setString(3, password);
-        stmt.setString(4, email);
-        stmt.setString(5, nickname);
-        stmt.setString(6, phone);
-        stmt.setString(7, securityQuestion);
-        stmt.setString(8, securityAnswer);
-        stmt.executeUpdate();
+        String query = "INSERT INTO users (name, username, password, email, nickname, phone, security_question, security_answer) " +
+                       "VALUES ('" + name + "', '" + username + "', '" + password + "', '" + email + "', '" + nickname + "', '" + phone + "', '" + securityQuestion + "', '" + securityAnswer + "')";
+        stmt = conn.createStatement();
+        stmt.executeUpdate(query);
 
         response.sendRedirect("../login.jsp");
     } catch (Exception e) {

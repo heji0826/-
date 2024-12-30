@@ -6,37 +6,25 @@
     String boardType = request.getParameter("boardType");
 
     if (boardType == null) {
-        boardType = "user";  // 기본값을 "user"로 설정
+        boardType = "user"; // 기본값 설정
     }
 
-    String query = "";
-    if ("admin".equals(boardType)) {
-        query = "SELECT u.user_id, ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " + 
-                "FROM admin_posts ap " +
-                "JOIN users u ON ap.user_id = u.user_id " + 
-                "WHERE ap.post_id = ?";
-    } else {
-        query = "SELECT u.user_id, up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " + 
-                "FROM user_posts up " + 
-                "JOIN users u ON up.user_id = u.user_id " + 
-                "WHERE up.post_id = ?";
-    }
+    String query = boardType.equals("admin") 
+        ? "SELECT u.user_id, ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " +
+          "FROM admin_posts ap JOIN users u ON ap.user_id = u.user_id WHERE ap.post_id = " + postId
+        : "SELECT u.user_id, up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " +
+          "FROM user_posts up JOIN users u ON up.user_id = u.user_id WHERE up.post_id = " + postId;
 
-    PreparedStatement stmt = conn.prepareStatement(query);
-    stmt.setInt(1, postId);
-    ResultSet rs = stmt.executeQuery();
-    
-    // 세션에서 user_id 가져오기
+    Statement stmt = conn.createStatement();
+    ResultSet rs = stmt.executeQuery(query);
+
     Integer loggedInUserId = (Integer) session.getAttribute("user_id");
-    Boolean  is_Admin = (Boolean) session.getAttribute("is_admin");
 
-    // 로그인 상태가 아니라면 로그인 페이지로 리디렉션
     if (loggedInUserId == null) {
         response.sendRedirect("/web/login.jsp");
         return;
     }
 %>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -77,8 +65,8 @@
                 <p>작성일: <%= rs.getTimestamp("created_at") %></p>
                 <p><%= rs.getString("content") %></p>
                 <% 
-                String attachmentPath = rs.getString("attachment_path");
-                if (attachmentPath != null && !attachmentPath.isEmpty()) { 
+                    String attachmentPath = rs.getString("attachment_path");
+                    if (attachmentPath != null && !attachmentPath.isEmpty()) { 
                 %>
                     <p>첨부파일: 
                         <a href="<%= request.getContextPath() %>/board/download.jsp?file=<%= attachmentPath %>">
@@ -86,23 +74,7 @@
                         </a>
                     </p>
                 <% } %>
-            <% } %>
-            <%
-                int userId = 0;
-                if (username != null) {
-                    PreparedStatement userStmt = conn.prepareStatement("SELECT user_id FROM users WHERE username = ?");
-                    userStmt.setString(1, username);
-                    ResultSet userRs = userStmt.executeQuery();
-                    if (userRs.next()) {
-                        userId = userRs.getInt("user_id");
-                    }
-                    userRs.close();
-                    userStmt.close();
-                }
-
-                    // rs에서 가져온 user_id와 userId가 같으면 수정, 삭제 버튼을 보여줌
-                    if ((rs.getInt("user_id") == userId) || (Boolean.TRUE.equals(is_Admin))) {
-                %>
+                <% if (rs.getInt("user_id") == loggedInUserId || Boolean.TRUE.equals(isAdmin)) { %>
                     <form action="../board/edit_post.jsp" method="post" style="display: inline-block; margin-right: 10px;">
                         <input type="hidden" name="id" value="<%= postId %>">
                         <input type="hidden" name="boardType" value="<%= boardType %>">
@@ -113,16 +85,14 @@
                         <input type="hidden" name="boardType" value="<%= boardType %>">
                         <button type="submit" onclick="return confirm('정말 삭제하시겠습니까?')">삭제</button>
                     </form>
-            <%
-                }
-            %>
-
+                <% } %>
+            <% } %>
             <hr>
             <h3>댓글</h3>
             <form action="../actions/add_comment_action.jsp" method="post">
                 <input type="hidden" name="post_id" value="<%= postId %>">
                 <input type="hidden" name="board_type" value="<%= boardType %>">
-                댓글 내용: <textarea name="content" required></textarea><br>
+                <textarea name="content" required></textarea><br>
                 <button type="submit">댓글 달기</button>
             </form>
             <table border="1">
@@ -130,26 +100,26 @@
                     <th>작성자</th>
                     <th>내용</th>
                     <th>작성일</th>
-                    <% if ("admin".equals(session.getAttribute("role"))) { %>
+                    <% if (isAdmin != null && isAdmin) { %>
                         <th>관리</th>
                     <% } %>
                 </tr>
                 <%
-                    String commentTable = boardType.equals("admin") ? "admin_comments" : "user_comments";
-                    
-                    PreparedStatement commentStmt = conn.prepareStatement("SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " + 
-                                                                          "FROM " + commentTable + " c " + 
-                                                                          "JOIN users u ON c.user_id = u.user_id " +
-                                                                          "WHERE c.post_id = ?");
-                    commentStmt.setInt(1, postId);
-                    ResultSet commentRs = commentStmt.executeQuery();
+                    String commentQuery = boardType.equals("admin") 
+                        ? "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
+                          "FROM admin_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId
+                        : "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
+                          "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
+
+                    ResultSet commentRs = stmt.executeQuery(commentQuery);
+
                     while (commentRs.next()) {
                         int commentUserId = commentRs.getInt("user_id");
                 %>
                 <tr>
                     <td><%= commentRs.getString("nickname") %></td>
                     <td>
-                        <% if ((Boolean.TRUE.equals(is_Admin)) || (loggedInUserId == commentUserId)) { %>
+                        <% if ((Boolean.TRUE.equals(isAdmin)) || (loggedInUserId == commentUserId)) { %>
                             <form action="../actions/edit_comment_action.jsp" method="post" style="display:inline;" id="edit-form-<%= commentRs.getInt("comment_id") %>">
                                 <input type="hidden" name="comment_id" value="<%= commentRs.getInt("comment_id") %>">
                                 <input type="hidden" name="boardType" value="<%= boardType %>">
@@ -159,14 +129,13 @@
                                 
                                 <button type="button" id="save-button-<%= commentRs.getInt("comment_id") %>" onclick="saveEdit(<%= commentRs.getInt("comment_id") %>)" style="display:none;">완료</button>
                             </form>
-                            
                         <% } else { %>
                             <%= commentRs.getString("content") %>
                         <% } %>
                     </td>
                     <td><%= commentRs.getTimestamp("created_at") %></td>
                     <% 
-                        if ((Boolean.TRUE.equals(is_Admin)) || loggedInUserId == commentUserId) { 
+                        if ((Boolean.TRUE.equals(isAdmin)) || loggedInUserId == commentUserId) { 
                     %>
                     <td>
                         <a href="javascript:void(0);" 
@@ -179,16 +148,13 @@
                     </td>                    
                     <td>
                         <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>&boardType=<%= boardType %>" 
-                            onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                         
-                    </td>                    
+                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                    </td>
                     <% } %>
                 </tr>
-                
                 <%
                     }
                     commentRs.close();
-                    commentStmt.close();
                 %>
             </table>
         </div>
@@ -196,3 +162,7 @@
 </div>
 </body>
 </html>
+<%
+    rs.close();
+    stmt.close();
+%>

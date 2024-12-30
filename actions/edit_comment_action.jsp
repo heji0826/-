@@ -12,11 +12,11 @@
         commentTable = "admin_comments";
     }
 
+    Statement stmt = null;
     try {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE " + commentTable + " SET content = ? WHERE comment_id = ?");
-        stmt.setString(1, content);
-        stmt.setInt(2, commentId);
-        stmt.executeUpdate();
+        String updateQuery = "UPDATE " + commentTable + " SET content = '" + content + "' WHERE comment_id = " + commentId;
+        stmt = conn.createStatement();
+        stmt.executeUpdate(updateQuery);
         
         // 댓글 수정 후 리디렉션 (원래 페이지로 돌아가도록 처리)
         response.sendRedirect(request.getHeader("Referer"));
@@ -24,6 +24,7 @@
         e.printStackTrace();
         out.println("수정 중 오류가 발생했습니다.");
     } finally {
+        if (stmt != null) stmt.close();
         if (conn != null) conn.close();
     }
 %>
