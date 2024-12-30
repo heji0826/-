@@ -48,7 +48,7 @@
                     <%
                         if (!is_Admin) {
                     %>
-                    <a href="/web/actions/delete_user_action.jsp?username=<%= rs.getString("username") %>" class="button">삭제</a>
+                    <a href="/web/actions/delete_user_action.jsp?userId=<%= rs.getInt("user_id") %>" class="button">삭제</a>
                     <%
                         } else {
                     %>
