@@ -2,9 +2,15 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     int commentId = Integer.parseInt(request.getParameter("id"));
+    String boardType = request.getParameter("boardType");
+
+    String commentTable = "user_comments";
+    if ("admin".equals(boardType)) {
+        commentTable = "admin_comments";
+    }
 
     try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM user_comments WHERE comment_id = ?");
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + commentTable + " WHERE comment_id = ?");
         stmt.setInt(1, commentId);
         stmt.executeUpdate();
         

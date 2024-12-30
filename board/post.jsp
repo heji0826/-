@@ -151,10 +151,14 @@
                         <% if ("admin".equals(session.getAttribute("role")) || loggedInUserId == commentUserId) { %>
                             <form action="../actions/edit_comment_action.jsp" method="post" style="display:inline;" id="edit-form-<%= commentRs.getInt("comment_id") %>">
                                 <input type="hidden" name="comment_id" value="<%= commentRs.getInt("comment_id") %>">
+                                <input type="hidden" name="boardType" value="<%= boardType %>">
+                                
                                 <span id="comment-text-span-<%= commentRs.getInt("comment_id") %>"><%= commentRs.getString("content") %></span>
                                 <textarea name="content" id="comment-text-<%= commentRs.getInt("comment_id") %>" required style="display:none;" disabled><%= commentRs.getString("content") %></textarea>
+                                
                                 <button type="button" id="save-button-<%= commentRs.getInt("comment_id") %>" onclick="saveEdit(<%= commentRs.getInt("comment_id") %>)" style="display:none;">완료</button>
                             </form>
+                            
                         <% } else { %>
                             <%= commentRs.getString("content") %>
                         <% } %>
@@ -164,13 +168,19 @@
                         if ("admin".equals(session.getAttribute("role")) || loggedInUserId == commentUserId) { 
                     %>
                     <td>
-                        <a href="javascript:void(0);" id="edit-button-<%= commentRs.getInt("comment_id") %>" 
-                            data-comment-id="<%= commentRs.getInt("comment_id") %>"
-                            onclick="enableEdit(this)">수정</a>
-                    </td>
+                        <a href="javascript:void(0);" 
+                           id="edit-button-<%= commentRs.getInt("comment_id") %>" 
+                           data-comment-id="<%= commentRs.getInt("comment_id") %>"
+                           data-board-type="<%= boardType %>"
+                           onclick="enableEdit(this)">
+                            수정
+                        </a>
+                    </td>                    
                     <td>
-                        <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>">삭제</a>
-                    </td>
+                        <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>&boardType=<%= boardType %>" 
+                            onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                         
+                    </td>                    
                     <% } %>
                 </tr>
                 
