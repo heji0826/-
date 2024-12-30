@@ -45,6 +45,8 @@
                             Statement stmt = conn.createStatement();
                             ResultSet rs = stmt.executeQuery(query);
                             while (rs.next()) {
+			            int postId = rs.getInt("post_id");
+
                         %>
                         <tr>
                             <td><%= rs.getInt("post_id") %></td>
@@ -54,8 +56,30 @@
                             <td><%= rs.getTimestamp("created_at") %></td>
                             <td><%= rs.getTimestamp("updated_at") %></td>
                             <td>
-                                <a href="../actions/edit_post_action.jsp?postId=<%= rs.getInt("post_id") %>&boardType=<%= boardType %>">수정</a>
-                                <a href="../actions/delete_post_action.jsp?postId=<%= rs.getInt("post_id") %>&boardType=<%= boardType %>">삭제</a>
+                             <form id="editForm_<%= postId %>" action="../board/edit_post.jsp" method="post">
+                                    <input type="hidden" name="id" value="<%= postId %>">
+                                    <input type="hidden" name="boardType" value="<%= boardType %>">
+                                    <button type="button" onclick="submitEditForm(<%= postId %>)">수정</button>
+                                </form>
+                                <script>
+                                function submitEditForm(postId) {
+                                    document.getElementById('editForm_' + postId).submit();
+                                }
+                                </script>
+
+				<form id="deleteForm_<%= postId %>" action="../actions/delete_post_action.jsp" method="post" style="display: inline-block;">
+    <input type="hidden" name="postId" value="<%= postId %>">
+    <input type="hidden" name="boardType" value="<%= boardType %>">
+    <button type="button" onclick="confirmDelete(<%= postId %>)">삭제</button>
+</form>
+
+<script>
+function confirmDelete(postId) {
+    if (confirm('정말 삭제하시겠습니까?')) {
+        document.getElementById('deleteForm_' + postId).submit();
+    }
+}
+</script>
                             </td>
                         </tr>
                         <%
