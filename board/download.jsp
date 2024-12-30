@@ -1,13 +1,17 @@
 <%@ page import="java.io.*" %>
+<%@ page import="java.net.URLEncoder" %>
+<%@ page import="java.net.URLDecoder" %>
 <%@ page contentType="application/octet-stream" %>
 <%
     String fileName = request.getParameter("file");
     if (fileName != null && !fileName.isEmpty()) {
+        fileName = URLDecoder.decode(fileName, "UTF-8");
         String filePath = application.getRealPath("/uploads/") + fileName;
+        log(filePath);
         File file = new File(filePath);
 
         if (file.exists()) {
-            response.setHeader("Content-Disposition", "attachment; filename=\"" + file.getName() + "\"");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(file.getName(), "UTF-8") + "\"");
             response.setContentType("application/octet-stream");
             response.setContentLength((int) file.length());
 
