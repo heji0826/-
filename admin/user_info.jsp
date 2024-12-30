@@ -147,11 +147,81 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                 }
             %>
         </table>
+	    </div>
+    <div>
+    <h2>작성 댓글 조회</h2>
+    <table border="1" class="table">
+        <tr>
+            <th>댓글 ID</th>
+            <th>내용</th>
+            <th>작성일</th>
+            <th>수정일</th>
+            <th>관리</th>
+            <th>원글 조회</th>
+        </tr>
+        <%
+            if (conn != null) {
+                PreparedStatement pstmt = null;
+                ResultSet rs = null;
+                try {
+                    String query = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title FROM user_comments c JOIN user_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
+                    pstmt = conn.prepareStatement(query);
+                    pstmt.setInt(1, userId);
+                    rs = pstmt.executeQuery();
+                    while (rs.next()) {
+        %>
+        <tr>
+            <td><%= rs.getInt("comment_id") %></td>
+            <td><%= rs.getString("content") %></td>
+            <td><%= rs.getTimestamp("created_at") %></td>
+            <td><%= rs.getTimestamp("updated_at") %></td>
+            <td>
+                <a href="edit_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=user">수정</a>
+                <a href="delete_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=user">삭제</a>
+            </td>
+            <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">조회</a></td>
+        </tr>
+        <%
+                    }
+                    rs.close();
+                    pstmt.close();
+                    if (conn != null) {
+                        String adminCommentQuery = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title FROM admin_comments c JOIN admin_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
+                        pstmt = conn.prepareStatement(adminCommentQuery);
+                        pstmt.setInt(1, userId);
+                        rs = pstmt.executeQuery();
+                        while (rs.next()) {
+        %>
+        <tr>
+            <td><%= rs.getInt("comment_id") %></td>
+            <td><%= rs.getString("content") %></td>
+            <td><%= rs.getTimestamp("created_at") %></td>
+            <td><%= rs.getTimestamp("updated_at") %></td>
+            <td>
+                <a href="edit_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">수정</a>
+                <a href="delete_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">삭제</a>
+            </td>
+	    <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
+	    </tr>
+	    <%
+                        }
+                        rs.close();
+                        pstmt.close();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    out.println("데이터베이스 오류: " + e.getMessage());
+                } finally {
+                    if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+                    if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
+                }
+            }
+        %>
+    </table>
     </div>
     <div>
         <a href="/web/admin/userlists_dashboard.jsp" class="button">돌아가기</a>
     </div>
 </div>
-
 </body>
 </html>
