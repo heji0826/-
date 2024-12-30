@@ -19,10 +19,7 @@
     int postId = 0;
 
     // 게시판 종류 설정 (user 또는 admin)
-    String boardType = request.getParameter("boardType");
-    if (boardType == null) {
-        boardType = "user";  // 기본값은 user로 설정
-    }
+    String boardType = "user";
 
     // 사용자 정보
     String username = (String) session.getAttribute("username");
@@ -69,6 +66,8 @@
                         content = item.getString("UTF-8");
                     } else if ("postId".equals(item.getFieldName())) {
                         postId = Integer.parseInt(item.getString());
+                    } else if ("boardType".equals(item.getFieldName())) {
+                        boardType = item.getString();
                     }
             } else {
                 // attachment에 파일이 있나 확인

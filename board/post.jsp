@@ -28,6 +28,7 @@
     
     // 세션에서 user_id 가져오기
     Integer loggedInUserId = (Integer) session.getAttribute("user_id");
+    Boolean  is_Admin = (Boolean) session.getAttribute("is_admin");
 
     // 로그인 상태가 아니라면 로그인 페이지로 리디렉션
     if (loggedInUserId == null) {
@@ -100,7 +101,7 @@
                 }
 
                     // rs에서 가져온 user_id와 userId가 같으면 수정, 삭제 버튼을 보여줌
-                    if (rs.getInt("user_id") == userId) {
+                    if ((rs.getInt("user_id") == userId) || (Boolean.TRUE.equals(is_Admin))) {
                 %>
                     <form action="../board/edit_post.jsp" method="post" style="display: inline-block; margin-right: 10px;">
                         <input type="hidden" name="id" value="<%= postId %>">
@@ -148,7 +149,7 @@
                 <tr>
                     <td><%= commentRs.getString("nickname") %></td>
                     <td>
-                        <% if ("admin".equals(session.getAttribute("role")) || loggedInUserId == commentUserId) { %>
+                        <% if ((Boolean.TRUE.equals(is_Admin)) || (loggedInUserId == commentUserId)) { %>
                             <form action="../actions/edit_comment_action.jsp" method="post" style="display:inline;" id="edit-form-<%= commentRs.getInt("comment_id") %>">
                                 <input type="hidden" name="comment_id" value="<%= commentRs.getInt("comment_id") %>">
                                 <input type="hidden" name="boardType" value="<%= boardType %>">
@@ -165,7 +166,7 @@
                     </td>
                     <td><%= commentRs.getTimestamp("created_at") %></td>
                     <% 
-                        if ("admin".equals(session.getAttribute("role")) || loggedInUserId == commentUserId) { 
+                        if ((Boolean.TRUE.equals(is_Admin)) || loggedInUserId == commentUserId) { 
                     %>
                     <td>
                         <a href="javascript:void(0);" 

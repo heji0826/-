@@ -18,10 +18,7 @@
     int userId = 0;
 
     // 게시판 종류 설정 (user 또는 admin)
-    String boardType = request.getParameter("boardType");
-    if (boardType == null) {
-        boardType = "user";  // 기본값은 user로 설정
-    }
+    String boardType = "user";
 
     // 사용자 정보
     String username = (String) session.getAttribute("username");
@@ -66,7 +63,9 @@
                     title = item.getString("UTF-8");
                 } else if ("content".equals(item.getFieldName())) {
                     content = item.getString("UTF-8");
-                }
+                } else if ("boardType".equals(item.getFieldName())) {
+                    boardType = item.getString("UTF-8");
+                } 
             } else {
                 // attachment에 파일이 있나 확인
                 if (item.getName() == null || item.getName().isEmpty()) {
@@ -88,6 +87,7 @@
 
         // 게시물 정보 DB에 삽입
         String insertQuery = "";
+        log(boardType);
         if ("admin".equals(boardType)) {
             insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, ?, ?)";
         } else {
@@ -103,7 +103,7 @@
         insertStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));  // updated_at
         insertStmt.setInt(6, userId);  // user_id
         insertStmt.executeUpdate();
-
+        
         // 게시물 등록 후 리디렉션
         if ("admin".equals(boardType)) {
             response.sendRedirect("/web/board/admin_board.jsp");
