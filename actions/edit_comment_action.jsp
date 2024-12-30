@@ -5,9 +5,15 @@
     response.setCharacterEncoding("UTF-8"); // 응답 인코딩을 UTF-8로 설정
     int commentId = Integer.parseInt(request.getParameter("comment_id"));
     String content = request.getParameter("content");
+    String boardType = request.getParameter("boardType");
+
+    String commentTable = "user_comments";
+    if ("admin".equals(boardType)) {
+        commentTable = "admin_comments";
+    }
 
     try {
-        PreparedStatement stmt = conn.prepareStatement("UPDATE user_comments SET content = ? WHERE comment_id = ?");
+        PreparedStatement stmt = conn.prepareStatement("UPDATE " + commentTable + " SET content = ? WHERE comment_id = ?");
         stmt.setString(1, content);
         stmt.setInt(2, commentId);
         stmt.executeUpdate();
