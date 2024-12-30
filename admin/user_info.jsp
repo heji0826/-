@@ -1,6 +1,9 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ include file="./dashboard.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%
+int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 request에서 가져옴
+%>
 <html>
 <head>
     <title>회원 정보 조회</title>
@@ -24,7 +27,6 @@
                     PreparedStatement pstmt = null;
                     ResultSet rs = null;
                     try {
-                        int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 request에서 가져옴
                         String query = "SELECT * FROM users WHERE user_id = ?";
                         pstmt = conn.prepareStatement(query);
                         pstmt.setInt(1, userId);
@@ -80,6 +82,7 @@
                 <th>제목</th>
                 <th>작성일</th>
                 <th>수정일</th>
+                <th>게시판 종류</th>
                 <th>액션</th>
             </tr>
             <%
@@ -87,8 +90,8 @@
                     PreparedStatement pstmt = null;
                     ResultSet rs = null;
                     try {
-                        int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 request에서 가져옴
                         String query = "SELECT post_id, title, created_at, updated_at FROM user_posts WHERE user_id = ?";
+                        String boardType = "user";
                         pstmt = conn.prepareStatement(query);
                         pstmt.setInt(1, userId);
                         rs = pstmt.executeQuery();
@@ -99,6 +102,7 @@
                 <td><a href="web/user_board.jsp?id=<%= rs.getInt("post_id") %>"><%= rs.getString("title") %></a></td>
                 <td><%= rs.getTimestamp("created_at") %></td>
                 <td><%= rs.getTimestamp("updated_at") %></td>
+                <td>회원 게시판</td>
                 <td>
                     <a href="edit_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=user">수정</a>
                     <a href="delete_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=user">삭제</a>
@@ -108,9 +112,37 @@
                         }
                         rs.close();
                         pstmt.close();
+                        
+                        // admin_posts에서 게시물 가져오기
+                        String adminPostsQuery = "SELECT post_id, title, created_at, updated_at FROM admin_posts WHERE user_id = ?";
+                        pstmt = conn.prepareStatement(adminPostsQuery);
+                        pstmt.setInt(1, userId);
+                        rs = pstmt.executeQuery();
+    
+                        while (rs.next()) {
+                            %>
+                            <tr>
+                                <td><%= rs.getInt("post_id") %></td>
+                                <td><a href="web/admin_board.jsp?id=<%= rs.getInt("post_id") %>"><%= rs.getString("title") %></a></td>
+                                <td><%= rs.getTimestamp("created_at") %></td>
+                                <td><%= rs.getTimestamp("updated_at") %></td>
+                                <td>채용공고 게시판</td>
+                                <td>
+                                    <a href="edit_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=admin">수정</a>
+                                    <a href="delete_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=admin">삭제</a>
+                                </td>
+                            </tr>
+                            <%
+                        }
+                        rs.close();
+                        pstmt.close();
+    
                     } catch (SQLException e) {
                         e.printStackTrace();
                         out.println("데이터베이스 오류: " + e.getMessage());
+                    } finally {
+                        if (rs != null) try { rs.close(); } catch (SQLException e) { e.printStackTrace(); }
+                        if (pstmt != null) try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); }
                     }
                 }
             %>
