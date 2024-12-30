@@ -34,7 +34,13 @@
                     <tbody>
                         <%
                         String boardType = request.getParameter("boardType");
-                        if (conn != null && boardType != null) {
+                        if (boardType == null) {
+			%>
+			<tr>
+			<td colspan="7">조회할 게시판을 선택해주세요.</td>
+			</tr>	
+			<% }
+			if (conn != null && boardType != null) {
                             String query = "";
                             if ("admin".equals(boardType)) {
                                 query = "SELECT * FROM admin_posts";
@@ -47,7 +53,7 @@
                         %>
                         <tr>
                             <td><%= rs.getInt("post_id") %></td>
-                            <td><a href="web/board/post.jsp?postId=<%= rs.getInt("post_id") %>&boardType=<%= boardType %>"><%= rs.getString("title") %></a></td>
+                            <td><a href="../board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=<%= boardType %>"><%= rs.getString("title") %></a></td>
                             <td><%= rs.getString("content") %></td>
                             <td><%= rs.getString("attachment_path") %></td>
                             <td><%= rs.getTimestamp("created_at") %></td>
@@ -61,7 +67,7 @@
                             }
                             rs.close();
                             stmt.close();
-                        } else {
+			    } else {
                         %>
                         <tr>
                             <td colspan="7">데이터를 불러올 수 없습니다.</td>
