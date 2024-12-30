@@ -10,17 +10,8 @@
 <body>
 	<!-- Admin Posts 관리 -->
         <div class="content">
-        <h2>채용 공고 게시판 관리</h2>
-        <div class="container">
-            <h3>새 글 작성</h3>
-            <form id="adminPostForm">
-                <input type="hidden" id="adminPostId" name="post_id">
-                <input type="text" id="adminPostTitle" name="title" placeholder="제목" required>
-                <textarea id="adminPostContent" name="content" placeholder="내용" required></textarea>
-                <input type="text" id="adminPostAttachment" name="attachment_path" placeholder="첨부 파일 경로">
-                <button type="submit">저장</button>
-            </form>
-        </div>
+	<div class="container">
+	<h2>채용 공고 게시판 관리</h2>
         <table border="1" id="adminPostsTable">
             <thead>
                 <tr>
@@ -47,7 +38,12 @@
                     <td><%= rs.getString("attachment_path") %></td>
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td><%= rs.getTimestamp("updated_at") %></td>
-                </tr>  
+                    <td>
+                        <form action="../actions/edit_post_action.jsp" method="post" enctype="multipart/form-data">
+			<a href="../board/edit_post.jsp?postId<%= rs.getInt("post_id") %>&boardType=admin">수정</a>
+                        <a href="../actions/delete_post_action.jsp?postId<%= rs.getInt("post_id") %>&boardType=admin">삭제</a>
+                    </td>
+		</tr>  
                 <%
                     }
                     rs.close();
