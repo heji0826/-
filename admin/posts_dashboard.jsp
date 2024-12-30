@@ -13,7 +13,8 @@
             <h2>게시판 관리</h2>
             <form method="get" action="posts_dashboard.jsp">
 	    <select id="boardType" name="boardType" required>
-                    <option value="user">일반 회원 게시판</option>
+                    <option value="" disabled selected>게시판을 선택해주세요.</option>
+		    <option value="user">일반 회원 게시판</option>
                     <option value="admin">관리자 게시판</option>
                 </select>
                 <button type="submit">조회</button>
@@ -34,12 +35,6 @@
                     <tbody>
                         <%
                         String boardType = request.getParameter("boardType");
-                        if (boardType == null) {
-			%>
-			<tr>
-			<td colspan="7">조회할 게시판을 선택해주세요.</td>
-			</tr>	
-			<% }
 			if (conn != null && boardType != null) {
                             String query = "";
                             if ("admin".equals(boardType)) {
@@ -67,7 +62,15 @@
                             }
                             rs.close();
                             stmt.close();
-			    } else {
+			    } else if(boardType == null){
+			    %> 
+				<tr>
+					<td colspan="7">게시판을 선택해주세요.</td>
+				</tr>
+<%
+			    }
+
+			    else {
                         %>
                         <tr>
                             <td colspan="7">데이터를 불러올 수 없습니다.</td>
