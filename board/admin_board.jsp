@@ -12,9 +12,15 @@
     <div class="main-content">
         <div class="container">
             <h1>관리자 게시판</h1>
-            <% if ("admin".equals(session.getAttribute("role"))) { %>
-                <a href="/web/board/write_post.jsp?boardType=admin">글쓰기</a>
-            <% } %>
+            <% 
+                Boolean  is_Admin = (Boolean) session.getAttribute("is_admin");
+                if (Boolean.TRUE.equals(is_Admin)) { 
+            %>
+            <button class="button" onclick="window.location.href='/web/board/write_post.jsp?boardType=admin'">글쓰기</button>
+            <% 
+                } 
+            %>
+
             <table border="1">
                 <tr>
                     <th>번호</th>
