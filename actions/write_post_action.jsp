@@ -28,13 +28,12 @@
     }
 
     // 사용자 ID 조회 (데이터베이스에서 user_id를 가져옴)
-    PreparedStatement stmt = null;
+    Statement stmt = null;
     ResultSet rs = null;
     try {
-        String query = "SELECT user_id FROM users WHERE username = ?";
-        stmt = conn.prepareStatement(query);
-        stmt.setString(1, username);
-        rs = stmt.executeQuery();
+        String query = "SELECT user_id FROM users WHERE username = '" + username + "'";
+        stmt = conn.createStatement();
+        rs = stmt.executeQuery(query);
 
         if (rs.next()) {
             userId = rs.getInt("user_id");
@@ -65,7 +64,7 @@
                     content = item.getString("UTF-8");
                 } else if ("boardType".equals(item.getFieldName())) {
                     boardType = item.getString("UTF-8");
-                } 
+                }
             } else {
                 // attachment에 파일이 있나 확인
                 if (item.getName() == null || item.getName().isEmpty()) {
@@ -78,32 +77,24 @@
                     }
                     File uploadedFile = new File(uploadDir + "/" + fileName);
                     item.write(uploadedFile);  // 파일 업로드
-
-                    // 디버깅: 업로드된 파일 경로 출력
-                    log("업로드 디렉토리 경로: " + uploadedFile.getAbsolutePath());
                 }
             }
         }
 
         // 게시물 정보 DB에 삽입
         String insertQuery = "";
-        log(boardType);
         if ("admin".equals(boardType)) {
-            insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
+                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
         } else {
-            insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, ?, ?, ?)";
+            insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
+                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
         }
 
         // INSERT 쿼리 실행
-        PreparedStatement insertStmt = conn.prepareStatement(insertQuery);
-        insertStmt.setString(1, title);
-        insertStmt.setString(2, content);
-        insertStmt.setString(3, fileName);  // 파일 경로 저장
-        insertStmt.setTimestamp(4, new Timestamp(System.currentTimeMillis()));  // created_at
-        insertStmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));  // updated_at
-        insertStmt.setInt(6, userId);  // user_id
-        insertStmt.executeUpdate();
-        
+        stmt = conn.createStatement();
+        stmt.executeUpdate(insertQuery);
+
         // 게시물 등록 후 리디렉션
         if ("admin".equals(boardType)) {
             response.sendRedirect("/web/board/admin_board.jsp");
@@ -111,15 +102,9 @@
             response.sendRedirect("/web/board/user_board.jsp");
         }
     } catch (Exception e) {
-        // 예외 처리
-        log("파일 업로드 또는 게시물 등록에 실패했습니다. 오류: " + e.getMessage());
-
-        // 스택 트레이스 문자열로 변환
-        StringWriter sw = new StringWriter();
-        e.printStackTrace(new PrintWriter(sw));
-        String stackTrace = sw.toString();
-        
-        out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류 스택 트레이스:");
-        out.println(stackTrace);  // 자세한 오류 정보 출력
+        out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류: " + e.getMessage());
+    } finally {
+        if (stmt != null) stmt.close();
+        if (conn != null) conn.close();
     }
 %>

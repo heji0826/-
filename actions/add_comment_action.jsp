@@ -9,10 +9,10 @@
 
     String nickname = null;
     int userId = 0;
-    PreparedStatement stmt = null;
-    PreparedStatement nicknameStmt = null;
+    Statement stmt = null;
+    Statement nicknameStmt = null;
     ResultSet nicknameRs = null;
-    PreparedStatement userStmt = null;
+    Statement userStmt = null;
     ResultSet userRs = null;
 
     try {
@@ -22,10 +22,9 @@
             return;
         }
         // 사용자 닉네임 및 user_id 조회
-        String nicknameQuery = "SELECT nickname, user_id FROM users WHERE username = ?";
-        nicknameStmt = conn.prepareStatement(nicknameQuery);
-        nicknameStmt.setString(1, username);
-        nicknameRs = nicknameStmt.executeQuery();
+        String nicknameQuery = "SELECT nickname, user_id FROM users WHERE username = '" + username + "'";
+        nicknameStmt = conn.createStatement();
+        nicknameRs = nicknameStmt.executeQuery(nicknameQuery);
 
         if (nicknameRs.next()) {
             nickname = nicknameRs.getString("nickname");
@@ -33,10 +32,9 @@
         }
 
         // 유효한 사용자 여부 확인
-        String userCheckQuery = "SELECT COUNT(*) FROM users WHERE user_id = ?";
-        userStmt = conn.prepareStatement(userCheckQuery);
-        userStmt.setInt(1, userId);
-        userRs = userStmt.executeQuery();
+        String userCheckQuery = "SELECT COUNT(*) FROM users WHERE user_id = " + userId;
+        userStmt = conn.createStatement();
+        userRs = userStmt.executeQuery(userCheckQuery);
 
         if (userRs.next() && userRs.getInt(1) > 0) {
             // board_type에 따라 댓글 테이블 선택
@@ -46,12 +44,10 @@
             }
 
             // 댓글 삽입 쿼리 (nickname은 저장하지 않음)
-            String query = "INSERT INTO " + commentTable + " (post_id, user_id, content) VALUES (?, ?, ?)";
-            stmt = conn.prepareStatement(query);
-            stmt.setInt(1, postId);
-            stmt.setInt(2, userId);
-            stmt.setString(3, content);
-            stmt.executeUpdate();
+            String query = "INSERT INTO " + commentTable + " (post_id, user_id, content) VALUES (" 
+                + postId + ", " + userId + ", '" + content + "')";
+            stmt = conn.createStatement();
+            stmt.executeUpdate(query);
 
             // 게시물 상세보기 페이지로 리디렉션
             response.sendRedirect("../board/post.jsp?id=" + postId + "&boardType=" + boardType);

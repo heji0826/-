@@ -10,10 +10,10 @@
         log(filePath);
         File file = new File(filePath);
 
-        if (file.exists()) {
+        if (file.exists() && file.isFile()) {
             response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(file.getName(), "UTF-8") + "\"");
             response.setContentType("application/octet-stream");
-            response.setContentLength((int) file.length());
+            response.setContentLengthLong(file.length());
 
             // 파일을 읽어서 클라이언트에게 전송
             try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
@@ -26,12 +26,15 @@
                 }
                 outStream.flush();
             } catch (IOException e) {
+                response.setContentType("text/html; charset=UTF-8");
                 out.println("파일 다운로드 중 오류가 발생했습니다: " + e.getMessage());
             }
         } else {
-            out.println("파일을 찾을 수 없습니다.");
+            response.setContentType("text/html; charset=UTF-8");
+            out.println("파일을 찾을 수 없거나 잘못된 요청입니다.");
         }
     } else {
+        response.setContentType("text/html; charset=UTF-8");
         out.println("파일명이 제공되지 않았습니다.");
     }
 %>

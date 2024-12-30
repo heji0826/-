@@ -10,9 +10,9 @@
     }
 
     try {
-        PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + commentTable + " WHERE comment_id = ?");
-        stmt.setInt(1, commentId);
-        stmt.executeUpdate();
+        Statement stmt = conn.createStatement();
+        String query = "DELETE FROM " + commentTable + " WHERE comment_id = " + commentId;
+        stmt.executeUpdate(query);
         
         // 댓글 삭제 후 리디렉션
         response.sendRedirect(request.getHeader("Referer"));

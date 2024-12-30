@@ -13,7 +13,7 @@
         <div class="container">
             <h1>관리자 게시판</h1>
             <% 
-                Boolean  is_Admin = (Boolean) session.getAttribute("is_admin");
+                Boolean is_Admin = (Boolean) session.getAttribute("is_admin");
                 if (Boolean.TRUE.equals(is_Admin)) { 
             %>
             <button class="button" onclick="window.location.href='/web/board/write_post.jsp?boardType=admin'">글쓰기</button>
@@ -43,7 +43,6 @@
                     <td><%= rs.getString("nickname") %></td>
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">보기</a></td>
-
                 </tr>
                 <%
                         }
@@ -54,8 +53,8 @@
                 <tr>
                     <td colspan="5">데이터베이스 연결에 실패했습니다.</td>
                 </tr>
-             <% } %>
-         </table>
+                <% } %>
+            </table>
         </div>
     </div>
 </div>
