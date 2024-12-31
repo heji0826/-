@@ -99,7 +99,7 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             %>
             <tr>
                 <td><%= rs.getInt("post_id") %></td>
-                <td><a href="web/user_board.jsp?id=<%= rs.getInt("post_id") %>"><%= rs.getString("title") %></a></td>
+                <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user"><%= rs.getString("title") %></a></td>
                 <td><%= rs.getTimestamp("created_at") %></td>
                 <td><%= rs.getTimestamp("updated_at") %></td>
                 <td>회원 게시판</td>
@@ -123,7 +123,7 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                             %>
                             <tr>
                                 <td><%= rs.getInt("post_id") %></td>
-                                <td><a href="web/admin_board.jsp?id=<%= rs.getInt("post_id") %>"><%= rs.getString("title") %></a></td>
+                                <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin"><%= rs.getString("title") %></a></td>
                                 <td><%= rs.getTimestamp("created_at") %></td>
                                 <td><%= rs.getTimestamp("updated_at") %></td>
                                 <td>채용공고 게시판</td>
@@ -177,10 +177,10 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             <td><%= rs.getTimestamp("created_at") %></td>
             <td><%= rs.getTimestamp("updated_at") %></td>
             <td>
-                <a href="edit_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=user">수정</a>
-                <a href="delete_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=user">삭제</a>
+		    <a href="/web/actions/edit_comment_action.jsp?comment_id=<%= rs.getInt("comment_id") %>&content=<%= rs.getString("content") %>&boardType=user">수정</a>
+                <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=user">삭제</a>
             </td>
-            <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">조회</a></td>
+            <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">조회</a></td>
         </tr>
         <%
                     }
@@ -200,10 +200,10 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             <td><%= rs.getTimestamp("created_at") %></td>
             <td><%= rs.getTimestamp("updated_at") %></td>
             <td>
-                <a href="edit_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">수정</a>
-                <a href="delete_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">삭제</a>
+		    <a href="/web/actions/edit_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&content=<%= rs.getString("content") %>&boardType=admin">수정</a>
+                <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=admin">삭제</a>
             </td>
-            <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
+            <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
         </tr>
         <%
                     }
