@@ -69,11 +69,8 @@
                     if (attachmentPath != null && !attachmentPath.isEmpty()) { 
                 %>
                     <p>첨부파일: 
-<<<<<<< HEAD
                         <a href="<%= request.getContextPath() %>/board/download.jsp?file=<%= attachmentPath %>">
-=======
                         <a href="<%= request.getContextPath() %>./download.jsp?file=<%= attachmentPath %>">
->>>>>>> cb35dfe934d594422e5eb602f84de2e20b848385
                             <%= attachmentPath %>
                         </a>
                     </p>

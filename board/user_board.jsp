@@ -46,8 +46,6 @@
                                 query += " WHERE " + searchField + " LIKE '%" + search + "%'";
                             }
                             query += " ORDER BY p.created_at DESC";
-                            String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p "
-                                         + "JOIN users u ON p.user_id = u.user_id";
                             rs = stmt.executeQuery(query);
                             while (rs.next()) {
                 %>
