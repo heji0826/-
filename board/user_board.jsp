@@ -13,6 +13,7 @@
         <div class="container">
             <h1>회원 게시판</h1>
             <button class="button" onclick="window.location.href='/web/board/write_post.jsp?boardType=user'">글쓰기</button>
+<<<<<<< HEAD
             <br>
             <form method="get" action="" class="search-container">
                 <select name="searchField" class="search-select" required>
@@ -25,6 +26,9 @@
             </form>
             <br>
 
+=======
+            <br><br>
+>>>>>>> cb35dfe934d594422e5eb602f84de2e20b848385
             <table border="1" class="table">
                 <tr>
                     <th>번호</th>
@@ -39,6 +43,7 @@
                     try {
                         if (conn != null) {
                             stmt = conn.createStatement();
+<<<<<<< HEAD
                             String searchField = request.getParameter("searchField");
                             String search = request.getParameter("search");
                             String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p " +
@@ -47,6 +52,10 @@
                                 query += " WHERE " + searchField + " LIKE '%" + search + "%'";
                             }
                             query += " ORDER BY p.created_at DESC";
+=======
+                            String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p "
+                                         + "JOIN users u ON p.user_id = u.user_id";
+>>>>>>> cb35dfe934d594422e5eb602f84de2e20b848385
                             rs = stmt.executeQuery(query);
                             while (rs.next()) {
                 %>

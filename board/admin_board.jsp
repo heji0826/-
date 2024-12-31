@@ -31,7 +31,6 @@
                 <button type="submit" class="search-button">검색</button>
             </form>
             <br>
-
             <table border="1">
                 <tr>
                     <th>번호</th>
