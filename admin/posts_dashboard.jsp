@@ -19,7 +19,6 @@
                 </select>
                 <button type="submit">조회</button>
             </form>
-            <div class="container">
                 <table border="1" id="adminPostsTable">
                     <thead>
                         <tr>
@@ -106,6 +105,5 @@ function confirmDelete(postId) {
                 </table>
             </div>
         </div>
-    </div>
 </body>
 </html>
