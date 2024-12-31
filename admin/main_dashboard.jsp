@@ -11,7 +11,7 @@
         <div class="content">
             <div class="admin-container">
                 <h1>관리자 페이지입니다.</h1>
-                <img src="/web/images/main.jpg" alt="adminPage Image" class="admin-image">
+                <img src="/web/images/adminPage.jpg" alt="adminPage Image" class="admin-image">
             </div>        
         </div>
     </div>
