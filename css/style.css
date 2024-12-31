@@ -184,8 +184,9 @@ form textarea {
 
 .admin-container{
     flex-grow: 1;
-    max-width: 800px;
-    margin: auto 0;
+    max-width: 2000px;
+    margin-right: 200px;
+    margin-top : 70px; 
     padding: 0px;
     background-color: var(--background-color);
     box-shadow: 0 2px 5px var (--shadow-color);
