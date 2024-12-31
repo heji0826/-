@@ -115,11 +115,8 @@
                         : "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
                           "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
 
-<<<<<<< HEAD
                     
                     commentQuery += " ORDER BY c.created_at DESC";     
-=======
->>>>>>> cb35dfe934d594422e5eb602f84de2e20b848385
                     ResultSet commentRs = stmt.executeQuery(commentQuery);
 
                     while (commentRs.next()) {
