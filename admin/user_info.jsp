@@ -104,8 +104,8 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                 <td><%= rs.getTimestamp("updated_at") %></td>
                 <td>회원 게시판</td>
                 <td>
-                    <a href="edit_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=user">수정</a>
-                    <a href="delete_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=user">삭제</a>
+                    <a href="/web/board/edit_post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">수정</a>
+                    <a href="/web/actions/delete_post_action.jsp?postId=<%= rs.getInt("post_id") %>&board_type=user">삭제</a>
                 </td>
             </tr>
             <%
@@ -128,8 +128,8 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                                 <td><%= rs.getTimestamp("updated_at") %></td>
                                 <td>채용공고 게시판</td>
                                 <td>
-                                    <a href="edit_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=admin">수정</a>
-                                    <a href="delete_post.jsp?id=<%= rs.getInt("post_id") %>&board_type=admin">삭제</a>
+                                    <a href="/web/board/edit_post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">수정</a>
+                                    <a href="../actions/delete_post_action.jsp?postId=<%= rs.getInt("post_id") %>&board_type=admin">삭제</a>
                                 </td>
                             </tr>
                             <%
