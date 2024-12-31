@@ -164,7 +164,8 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                 PreparedStatement pstmt = null;
                 ResultSet rs = null;
                 try {
-                    String query = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title FROM user_comments c JOIN user_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
+                    // user_comments 조회
+                    String query = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title, c.post_id FROM user_comments c JOIN user_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
                     pstmt = conn.prepareStatement(query);
                     pstmt.setInt(1, userId);
                     rs = pstmt.executeQuery();
@@ -185,12 +186,13 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                     }
                     rs.close();
                     pstmt.close();
-                    if (conn != null) {
-                        String adminCommentQuery = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title FROM admin_comments c JOIN admin_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
-                        pstmt = conn.prepareStatement(adminCommentQuery);
-                        pstmt.setInt(1, userId);
-                        rs = pstmt.executeQuery();
-                        while (rs.next()) {
+
+                    // admin_comments 조회
+                    String adminCommentQuery = "SELECT c.comment_id, c.content, c.created_at, c.updated_at, p.title, c.post_id FROM admin_comments c JOIN admin_posts p ON c.post_id = p.post_id WHERE c.user_id = ?";
+                    pstmt = conn.prepareStatement(adminCommentQuery);
+                    pstmt.setInt(1, userId);
+                    rs = pstmt.executeQuery();
+                    while (rs.next()) {
         %>
         <tr>
             <td><%= rs.getInt("comment_id") %></td>
@@ -201,13 +203,12 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
                 <a href="edit_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">수정</a>
                 <a href="delete_comment.jsp?id=<%= rs.getInt("comment_id") %>&board_type=admin">삭제</a>
             </td>
-	    <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
-	    </tr>
-	    <%
-                        }
-                        rs.close();
-                        pstmt.close();
+            <td><a href="web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
+        </tr>
+        <%
                     }
+                    rs.close();
+                    pstmt.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
                     out.println("데이터베이스 오류: " + e.getMessage());
@@ -218,10 +219,10 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             }
         %>
     </table>
-    </div>
-    <div>
-        <a href="/web/admin/userlists_dashboard.jsp" class="button">돌아가기</a>
-    </div>
+</div>
+<div>
+    <a href="/web/admin/userlists_dashboard.jsp" class="button">돌아가기</a>
+</div>
 </div>
 </body>
 </html>
