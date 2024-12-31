@@ -177,7 +177,6 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             <td><%= rs.getTimestamp("created_at") %></td>
             <td><%= rs.getTimestamp("updated_at") %></td>
             <td>
-		    <a href="/web/actions/edit_comment_action.jsp?comment_id=<%= rs.getInt("comment_id") %>&content=<%= rs.getString("content") %>&boardType=user">수정</a>
                 <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=user">삭제</a>
             </td>
             <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">조회</a></td>
@@ -199,9 +198,8 @@ int userId = Integer.parseInt(request.getParameter("user_id")); // user_id를 re
             <td><%= rs.getString("content") %></td>
             <td><%= rs.getTimestamp("created_at") %></td>
             <td><%= rs.getTimestamp("updated_at") %></td>
-            <td>
-		    <a href="/web/actions/edit_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&content=<%= rs.getString("content") %>&boardType=admin">수정</a>
-                <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=admin">삭제</a>
+	    <td>    
+	    	<a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=admin">삭제</a>
             </td>
             <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
         </tr>
