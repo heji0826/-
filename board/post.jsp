@@ -54,6 +54,10 @@
             form.submit();
         }
     </script>
+    <style>
+        
+    </style>
+    
 </head>
 <body>
 <div class="layout">
@@ -96,69 +100,72 @@
                 <textarea name="content" required></textarea><br>
                 <button type="submit">댓글 달기</button>
             </form>
-            <table border="1">
-                <tr>
-                    <th>작성자</th>
-                    <th>내용</th>
-                    <th>작성일</th>
-                    <% if (isAdmin != null && isAdmin) { %>
-                        <th>관리</th>
-                    <% } %>
-                </tr>
-                <%
-                    String commentQuery = boardType.equals("admin") 
-                        ? "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
-                          "FROM admin_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId
-                        : "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
-                          "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
-
-                    
-                    commentQuery += " ORDER BY c.created_at DESC";     
-                    ResultSet commentRs = stmt.executeQuery(commentQuery);
-
-                    while (commentRs.next()) {
-                        int commentUserId = commentRs.getInt("user_id");
-                %>
-                <tr>
-                    <td><%= commentRs.getString("nickname") %></td>
-                    <td>
-                        <% if ((Boolean.TRUE.equals(isAdmin)) || (loggedInUserId == commentUserId)) { %>
-                            <form action="../actions/edit_comment_action.jsp" method="post" style="display:inline;" id="edit-form-<%= commentRs.getInt("comment_id") %>">
-                                <input type="hidden" name="comment_id" value="<%= commentRs.getInt("comment_id") %>">
-                                <input type="hidden" name="boardType" value="<%= boardType %>">
-                                
-                                <span id="comment-text-span-<%= commentRs.getInt("comment_id") %>"><%= commentRs.getString("content") %></span>
-                                <textarea name="content" id="comment-text-<%= commentRs.getInt("comment_id") %>" required style="display:none;" disabled><%= commentRs.getString("content") %></textarea>
-                                
-                                <button type="button" id="save-button-<%= commentRs.getInt("comment_id") %>" onclick="saveEdit(<%= commentRs.getInt("comment_id") %>)" style="display:none;">완료</button>
-                            </form>
-                        <% } else { %>
-                            <%= commentRs.getString("content") %>
+            <table class="comments-table">
+                <thead>
+                    <tr>
+                        <th>작성자</th>
+                        <th>내용</th>
+                        <th>작성일</th>
+                        <% if (isAdmin != null && isAdmin) { %>
+                            <th>관리</th>
                         <% } %>
-                    </td>
-                    <td><%= commentRs.getTimestamp("created_at") %></td>
-                    <% 
-                        if ((Boolean.TRUE.equals(isAdmin)) || loggedInUserId == commentUserId) { 
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        String commentQuery = boardType.equals("admin") 
+                            ? "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
+                              "FROM admin_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId
+                            : "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
+                              "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
+            
+                        commentQuery += " ORDER BY c.created_at DESC";     
+                        ResultSet commentRs = stmt.executeQuery(commentQuery);
+            
+                        while (commentRs.next()) {
+                            int commentUserId = commentRs.getInt("user_id");
                     %>
-                    <td>
-                        <a href="javascript:void(0);" 
-                           id="edit-button-<%= commentRs.getInt("comment_id") %>" 
-                           data-comment-id="<%= commentRs.getInt("comment_id") %>"
-                           data-board-type="<%= boardType %>"
-                           onclick="enableEdit(this)">
-                            수정
-                        </a>
-                    </td>                    
-                    <td>
-                        <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>&boardType=<%= boardType %>" 
-                           onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
-                    </td>
-                    <% } %>
-                </tr>
-                <%
-                    }
-                    commentRs.close();
-                %>
+                    <tr>
+                        <td><%= commentRs.getString("nickname") %></td>
+                        <td>
+                            <% if ((Boolean.TRUE.equals(isAdmin)) || (loggedInUserId == commentUserId)) { %>
+                                <form action="../actions/edit_comment_action.jsp" method="post" style="display:inline;" id="edit-form-<%= commentRs.getInt("comment_id") %>">
+                                    <input type="hidden" name="comment_id" value="<%= commentRs.getInt("comment_id") %>">
+                                    <input type="hidden" name="boardType" value="<%= boardType %>">
+                                    
+                                    <span id="comment-text-span-<%= commentRs.getInt("comment_id") %>"><%= commentRs.getString("content") %></span>
+                                    <textarea name="content" id="comment-text-<%= commentRs.getInt("comment_id") %>" required style="display:none;" disabled><%= commentRs.getString("content") %></textarea>
+                                    
+                                    <button type="button" id="save-button-<%= commentRs.getInt("comment_id") %>" class="btn-save" onclick="saveEdit(<%= commentRs.getInt("comment_id") %>)" style="display:none;">완료</button>
+                                </form>
+                            <% } else { %>
+                                <%= commentRs.getString("content") %>
+                            <% } %>
+                        </td>
+                        <td><%= commentRs.getTimestamp("created_at") %></td>
+                        <% 
+                            if ((Boolean.TRUE.equals(isAdmin)) || loggedInUserId == commentUserId) { 
+                        %>
+                        <td>
+                            <a href="javascript:void(0);" 
+                               id="edit-button-<%= commentRs.getInt("comment_id") %>" 
+                               data-comment-id="<%= commentRs.getInt("comment_id") %>"
+                               data-board-type="<%= boardType %>"
+                               class="btn-edit"
+                               onclick="enableEdit(this)">
+                                수정
+                            </a>
+                            <a href="../actions/delete_comment_action.jsp?id=<%= commentRs.getInt("comment_id") %>&boardType=<%= boardType %>" 
+                               class="btn-edit"
+                               onclick="return confirm('정말 삭제하시겠습니까?');">삭제</a>
+                        </td>
+                        <% } %>
+                    </tr>
+                    <%
+                        }
+                        commentRs.close();
+                    %>
+                </tbody>
             </table>
         </div>
     </div>

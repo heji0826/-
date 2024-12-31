@@ -31,51 +31,56 @@
                 <button type="submit" class="search-button">검색</button>
             </form>
             <br>
-            <table border="1">
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                    <th>보기</th>
-                </tr>
-                <%
-                    if (conn != null) {
-                        Statement stmt = conn.createStatement();
-                        String query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname " +
-                                        "FROM admin_posts ap " +
-                                        "JOIN users u ON ap.user_id = u.user_id ";
 
-                        // 검색 필드와 검색어 조건 추가
-                        String searchField = request.getParameter("searchField");
-                        String search = request.getParameter("search");
-                        if (searchField != null && search != null && !search.trim().isEmpty()) {
-                            query += "WHERE " + searchField + " LIKE '%" + search + "%' ";
-                        }
-
-                        // 정렬 조건 추가
-                        query += "ORDER BY ap.created_at DESC";
-                        ResultSet rs = stmt.executeQuery(query);
-                        while (rs.next()) {
-                %>
-                <tr>
-                    <td><%= rs.getInt("post_id") %></td>
-                    <td><%= rs.getString("title") %></td>
-                    <td><%= rs.getString("nickname") %></td>
-                    <td><%= rs.getTimestamp("created_at") %></td>
-                    <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">보기</a></td>
-                </tr>
-                <%
-                        }
-                        rs.close();
-                        stmt.close();
-                    } else {
-                %>
-                <tr>
-                    <td colspan="5">데이터베이스 연결에 실패했습니다.</td>
-                </tr>
-                <% } %>
-            </table>
+            <table class="posts-table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>보기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        if (conn != null) {
+                            Statement stmt = conn.createStatement();
+                            String query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname " +
+                                           "FROM admin_posts ap " +
+                                           "JOIN users u ON ap.user_id = u.user_id ";
+            
+                            // 검색 필드와 검색어 조건 추가
+                            String searchField = request.getParameter("searchField");
+                            String search = request.getParameter("search");
+                            if (searchField != null && search != null && !search.trim().isEmpty()) {
+                                query += "WHERE " + searchField + " LIKE '%" + search + "%' ";
+                            }
+            
+                            // 정렬 조건 추가
+                            query += "ORDER BY ap.created_at DESC";
+                            ResultSet rs = stmt.executeQuery(query);
+                            while (rs.next()) {
+                    %>
+                    <tr>
+                        <td><%= rs.getInt("post_id") %></td>
+                        <td><%= rs.getString("title") %></td>
+                        <td><%= rs.getString("nickname") %></td>
+                        <td><%= rs.getTimestamp("created_at") %></td>
+                        <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin" class="btn-view">보기</a></td>
+                    </tr>
+                    <%
+                            }
+                            rs.close();
+                            stmt.close();
+                        } else {
+                    %>
+                    <tr>
+                        <td colspan="5" class="error-message">데이터베이스 연결에 실패했습니다.</td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>            
         </div>
     </div>
 </div>

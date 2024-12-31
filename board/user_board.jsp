@@ -24,55 +24,60 @@
                 <button type="submit" class="search-button">검색</button>
             </form>
             <br>
-            <table border="1" class="table">
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>작성자</th>
-                    <th>작성일</th>
-                    <th>보기</th>
-                </tr>
-                <%
-                    Statement stmt = null;
-                    ResultSet rs = null;
-                    try {
-                        if (conn != null) {
-                            stmt = conn.createStatement();
-                            String searchField = request.getParameter("searchField");
-                            String search = request.getParameter("search");
-                            String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p " +
-                                           "JOIN users u ON p.user_id = u.user_id";
-                            if (searchField != null && search != null && !search.trim().isEmpty()) {
-                                query += " WHERE " + searchField + " LIKE '%" + search + "%'";
+
+            <table class="posts-table">
+                <thead>
+                    <tr>
+                        <th>번호</th>
+                        <th>제목</th>
+                        <th>작성자</th>
+                        <th>작성일</th>
+                        <th>보기</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <%
+                        Statement stmt = null;
+                        ResultSet rs = null;
+                        try {
+                            if (conn != null) {
+                                stmt = conn.createStatement();
+                                String searchField = request.getParameter("searchField");
+                                String search = request.getParameter("search");
+                                String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p " +
+                                               "JOIN users u ON p.user_id = u.user_id";
+                                if (searchField != null && search != null && !search.trim().isEmpty()) {
+                                    query += " WHERE " + searchField + " LIKE '%" + search + "%'";
+                                }
+                                query += " ORDER BY p.created_at DESC";
+                                rs = stmt.executeQuery(query);
+                                while (rs.next()) {
+                    %>
+                    <tr>
+                        <td><%= rs.getInt("post_id") %></td>
+                        <td><%= rs.getString("title") %></td>
+                        <td><%= rs.getString("nickname") %></td>
+                        <td><%= rs.getTimestamp("created_at") %></td>
+                        <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user" class="btn-view">보기</a></td>
+                    </tr>
+                    <%
+                                }
+                            } else {
+                    %>
+                    <tr>
+                        <td colspan="5" class="error-message">데이터베이스 연결에 실패했습니다.</td>
+                    </tr>
+                    <% 
                             }
-                            query += " ORDER BY p.created_at DESC";
-                            rs = stmt.executeQuery(query);
-                            while (rs.next()) {
-                %>
-                <tr>
-                    <td><%= rs.getInt("post_id") %></td>
-                    <td><%= rs.getString("title") %></td>
-                    <td><%= rs.getString("nickname") %></td>
-                    <td><%= rs.getTimestamp("created_at") %></td>
-                    <td><a href="post.jsp?id=<%= rs.getInt("post_id") %>&boardType=user">보기</a></td>
-                </tr>
-                <%
-                            }
-                        } else {
-                %>
-                <tr>
-                    <td colspan="5">데이터베이스 연결에 실패했습니다.</td>
-                </tr>
-                <% 
+                        } catch (Exception e) {
+                            out.println("<tr><td colspan='5' class='error-message'>오류: " + e.getMessage() + "</td></tr>");
+                        } finally {
+                            if (rs != null) rs.close();
+                            if (stmt != null) stmt.close();
                         }
-                    } catch (Exception e) {
-                        out.println("<tr><td colspan='5'>오류: " + e.getMessage() + "</td></tr>");
-                    } finally {
-                        if (rs != null) rs.close();
-                        if (stmt != null) stmt.close();
-                    }
-                %>
-            </table>
+                    %>
+                </tbody>
+            </table>            
         </div>
     </div>
 </div>

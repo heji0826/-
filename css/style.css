@@ -265,6 +265,126 @@ h1, h2 {
 }
 
 .search-button:hover {
-    background-color: var(--hover-point-color);
+    background-color: #2d2d2d;
 }
 
+.comments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: left;
+}
+
+.comments-table th, .comments-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+.comments-table th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+}
+
+.comments-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.comments-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.comments-table td {
+    vertical-align: top;
+}
+
+.btn-edit, .btn-delete, .btn-save {
+    display: inline-block;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: white;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.btn-edit {
+    background-color: #007bff;
+}
+
+.btn-edit:hover {
+    background-color: #0056b3;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+}
+
+.btn-delete:hover {
+    background-color: #a71d2a;
+}
+
+.btn-save {
+    background-color: #28a745;
+    border: none;
+}
+
+.btn-save:hover {
+    background-color: #1e7e34;
+}
+
+.posts-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 테이블 그림자 */
+}
+
+.posts-table thead {
+    background-color: #f4f4f4;
+}
+
+.posts-table th, .posts-table td {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+}
+
+.posts-table th {
+    font-weight: bold;
+    text-align: center;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.posts-table tr:nth-child(even) {
+    background-color: #f9f9f9; /* 짝수 행 배경색 */
+}
+
+.posts-table tr:hover {
+    background-color: #f1f1f1; /* 행에 마우스를 올릴 때 배경색 */
+}
+
+.posts-table .btn-view {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.posts-table .btn-view:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    text-align: center;
+    color: #dc3545; /* 에러 메시지 색상 */
+    font-weight: bold;
+}
