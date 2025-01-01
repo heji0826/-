@@ -1,4 +1,5 @@
 <%@ include file="../db/db_connection.jsp" %>
+<%@ include file="../includes/md5.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setCharacterEncoding("UTF-8");
@@ -21,7 +22,7 @@
                        "', security_question = '" + securityQuestion + 
                        "', security_answer = '" + securityAnswer + "'";
         if (password != null && !password.isEmpty()) {
-            query += ", password = '" + password + "'";
+            query += ", password = '" + getMD5(password) + "'";
         }
         query += " WHERE username = '" + username + "'";
 

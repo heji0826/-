@@ -1,4 +1,5 @@
 <%@ include file="../db/db_connection.jsp" %>
+<%@ include file="../includes/md5.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String username = request.getParameter("username");
@@ -8,7 +9,7 @@
     ResultSet rs = null;
 
     try {
-        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + password + "'";
+        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + getMD5(password) + "'";
         stmt = conn.createStatement();
         rs = stmt.executeQuery(query);
 

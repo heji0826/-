@@ -7,32 +7,35 @@
     <meta charset="UTF-8">
     <title>비밀번호 찾기 결과</title>
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .button {
+            color: blue;
+            text-decoration: none;
+        }
+        
+        .button:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 <div class="layout">
     <div class="main-content">
         <div class="container">
-            <h1>비밀번호 찾기 결과</h1>
+            <h1>비밀번호 찾기</h1>
             <%
-                String user_name = request.getParameter("user_name");
-                String pass_word = request.getParameter("pass_word");
-            
-                user_name = URLDecoder.decode(user_name, "UTF-8");
-                pass_word = URLDecoder.decode(pass_word, "UTF-8");
-                
-                if (user_name != null && pass_word != null) {
+                String new_password = request.getParameter("new_password");
+                new_password = URLDecoder.decode(new_password, "UTF-8");
+                if (new_password != null && !new_password.isEmpty()) {
             %>
-                    <p>아이디: <%= user_name %></p>
-                    <p>비밀번호: <%= pass_word %></p>
-                    <a href="login.jsp"><button>로그인</button></a>
-            <% 
-                } else {
-            %>
-                    <p>알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.</p>
-                    <button onclick="history.back()">돌아가기</button>
-            <% 
-                }
-            %>
+            <p>임시 비밀번호가 발급되었습니다. 아래 임시 비밀번호를 사용하여 로그인하세요:</p>
+            <p><strong style="color: red; font-size: 20px;"><%= new_password %></strong></p>
+            <p>로그인 후 반드시 비밀번호를 변경하시기 바랍니다.</p>
+            <a href="login.jsp" class="button">로그인 페이지로 이동</a>
+            <% } else { %>
+            <p>임시 비밀번호 발급에 실패했습니다. 다시 시도해주세요.</p>
+            <button onclick="history.back()">돌아가기</button>
+            <% } %>
         </div>
     </div>
 </div>

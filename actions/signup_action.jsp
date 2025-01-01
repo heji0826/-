@@ -1,4 +1,5 @@
 <%@ include file="../db/db_connection.jsp" %>
+<%@ include file="../includes/md5.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     request.setCharacterEncoding("UTF-8");
@@ -15,7 +16,7 @@
 
     try {
         String query = "INSERT INTO users (name, username, password, email, nickname, phone, security_question, security_answer) " +
-                       "VALUES ('" + name + "', '" + username + "', '" + password + "', '" + email + "', '" + nickname + "', '" + phone + "', '" + securityQuestion + "', '" + securityAnswer + "')";
+                       "VALUES ('" + name + "', '" + username + "', '" + getMD5(password) + "', '" + email + "', '" + nickname + "', '" + phone + "', '" + securityQuestion + "', '" + securityAnswer + "')";
         stmt = conn.createStatement();
         stmt.executeUpdate(query);
 

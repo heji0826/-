@@ -11,8 +11,8 @@
 <div class="layout">
     <div class="main-content">
         <div class="container">
-            <h1>비밀번호 찾기</h1>
-            <p>입력한 정보가 일치하지 않습니다.</p>
+            <h1>비밀번호 찾기 실패</h1>
+            <p>입력한 정보가 일치하지 않습니다. 다시 확인해주세요.</p>
             <button onclick="history.back()">돌아가기</button>
         </div>
     </div>
