@@ -17,7 +17,7 @@
 <body>
 <div class="header">
     <a href="/web/index.jsp">
-        <img src="/web/images/logo.png" alt="Logo" class="logo">
+        <img src="/web/images/header.png" alt="Logo" class="logo">
     </a>
     <nav class="menu">
         <a href="/web/board/user_board.jsp">회원 게시판</a>
