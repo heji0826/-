@@ -4,14 +4,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>채용 정보 게시판</title>
+    <title>취업 정보 게시판</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
 <div class="layout">
     <div class="main-content">
         <div class="container">
-            <h1>채용 정보 게시판</h1>
+            <h1>취업 정보 게시판</h1>
             <% 
                 Boolean is_Admin = (Boolean) session.getAttribute("is_admin");
                 if (Boolean.TRUE.equals(is_Admin)) { 
