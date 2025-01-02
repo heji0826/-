@@ -8,6 +8,9 @@
     if ("admin".equals(boardType)) {
         commentTable = "admin_comments";
     }
+    else if("vip".equals(boardType)){
+        commentTable = "vip_comments";
+    }
 
     try {
         Statement stmt = conn.createStatement();

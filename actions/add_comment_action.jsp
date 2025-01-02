@@ -42,6 +42,9 @@
             if ("admin".equals(boardType)) {
                 commentTable = "admin_comments";
             }
+            else if("vip".equals(boardType)){
+                commentTable = "vip_comments";
+            }
 
             // 댓글 삽입 쿼리 (nickname은 저장하지 않음)
             String query = "INSERT INTO " + commentTable + " (post_id, user_id, content) VALUES (" 

@@ -17,7 +17,7 @@
     String fileName = null;
     int userId = 0;
 
-    // 게시판 종류 설정 (user 또는 admin)
+    // 게시판 종류 설정 (user 또는 admin 또는 vip)
     String boardType = "user";
 
     // 사용자 정보
@@ -86,8 +86,11 @@
         if ("admin".equals(boardType)) {
             insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
                            title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
-        } else {
+        } else if ("user".equals(boardType)) {
             insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
+                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
+        } else {
+            insertQuery = "INSERT INTO vip_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
                            title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
         }
 
@@ -98,8 +101,10 @@
         // 게시물 등록 후 리디렉션
         if ("admin".equals(boardType)) {
             response.sendRedirect("/web/board/admin_board.jsp");
-        } else {
+        } else if ("user".equals(boardType)) {
             response.sendRedirect("/web/board/user_board.jsp");
+        } else {
+            response.sendRedirect("/web/board/vip_board.jsp");
         }
     } catch (Exception e) {
         out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류: " + e.getMessage());

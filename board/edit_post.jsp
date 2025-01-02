@@ -11,6 +11,8 @@
     String query = "";
     if ("admin".equals(boardType)) {
         query = "SELECT * FROM admin_posts WHERE post_id = " + postId;
+    } else if ("vip".equals(boardType)) {
+        query = "SELECT * FROM vip_posts WHERE post_id = " + postId;
     } else {
         query = "SELECT * FROM user_posts WHERE post_id = " + postId;
     }

@@ -84,6 +84,9 @@
             if ("admin".equals(boardType)) {
                 updateQuery = "UPDATE admin_posts SET title = '" + title + "', content = '" + content +
                               "', updated_at = NOW() WHERE post_id = " + postId;
+            } else if("vip".equals(boardType)) {
+                updateQuery = "UPDATE vip_posts SET title = '" + title + "', content = '" + content +
+                              "', updated_at = NOW() WHERE post_id = " + postId;
             } else {
                 updateQuery = "UPDATE user_posts SET title = '" + title + "', content = '" + content +
                               "', updated_at = NOW() WHERE post_id = " + postId;
@@ -91,6 +94,9 @@
         } else {
             if ("admin".equals(boardType)) {
                 updateQuery = "UPDATE admin_posts SET title = '" + title + "', content = '" + content +
+                              "', updated_at = NOW(), attachment_path = '" + fileName + "' WHERE post_id = " + postId;
+            } else if("vip".equals(boardType)) {
+                updateQuery = "UPDATE vip_posts SET title = '" + title + "', content = '" + content +
                               "', updated_at = NOW(), attachment_path = '" + fileName + "' WHERE post_id = " + postId;
             } else {
                 updateQuery = "UPDATE user_posts SET title = '" + title + "', content = '" + content +

@@ -5,6 +5,9 @@
     Boolean isAdmin = (session != null && session.getAttribute("is_admin") != null) 
                       ? (Boolean) session.getAttribute("is_admin") 
                       : false;
+    Boolean isVip = (session != null && session.getAttribute("is_vip") != null) 
+                      ? (Boolean) session.getAttribute("is_vip") 
+                      : false;
 %>
 
 <!DOCTYPE html>
@@ -22,6 +25,7 @@
     <nav class="menu">
         <a href="/web/board/user_board.jsp">회원 게시판</a>
         <a href="/web/board/admin_board.jsp">취업 정보 게시판</a>
+        <a href="/web/board/vip_board.jsp">자소서 첨삭</a>
         <% if (isAdmin != null && isAdmin) { %>
             <a href="/web/admin/main_dashboard.jsp">관리자 페이지</a>
         <% } %>
