@@ -1,6 +1,14 @@
 <%@ include file="../includes/header.jsp" %>
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+    Integer loggedInUserId = (Integer) session.getAttribute("user_id");
+
+    if (loggedInUserId == null) {
+        response.sendRedirect("/web/login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -16,7 +24,10 @@
                 boolean is_Vip = (session != null && session.getAttribute("is_vip") != null)
                                ? (Boolean) session.getAttribute("is_vip")
                                : false;
-                String targetUrl = is_Vip ? "/web/board/write_post.jsp?boardType=vip" : "/web/board/payment.jsp";
+                boolean is_Admin = (session != null && session.getAttribute("is_admin") != null)
+                               ? (Boolean) session.getAttribute("is_admin")
+                               : false;
+                String targetUrl = (is_Vip || is_Admin) ? "/web/board/write_post.jsp?boardType=vip" : "/web/board/payment.jsp";
             %>
             <button class="button" onclick="location.href='<%= targetUrl %>';">글쓰기</button>
             <br>

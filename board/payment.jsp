@@ -44,30 +44,35 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Subscribe to Our Premium Service</h2>
-        <p>To access premium features, please subscribe by entering your payment details below.</p>
-        <form action="../actions/payment_action.jsp" method="post">
-            <div class="form-group">
-                <label for="name">Name on Card:</label>
-                <input type="text" id="name" name="name" required>
+    <div class="layout">
+        <div class="main-content">
+            <div class="container">
+                <br><br><br>
+                <h2>Subscribe to Our Premium Service</h2>
+                <p>프리미엄 기능을 이용하시려면, 아래에 결제 정보를 입력하여 구독해주세요.</p>
+                <form action="../actions/payment_action.jsp" method="post">
+                    <div class="form-group">
+                        <label for="name">Name on Card:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cardNumber">Card Number:</label>
+                        <input type="text" id="cardNumber" name="cardNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="expiryDate">Expiry Date (MM/YY):</label>
+                        <input type="text" id="expiryDate" name="expiryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV:</label>
+                        <input type="text" id="cvv" name="cvv" required>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit">구독하기</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="cardNumber">Card Number:</label>
-                <input type="text" id="cardNumber" name="cardNumber" required>
-            </div>
-            <div class="form-group">
-                <label for="expiryDate">Expiry Date (MM/YY):</label>
-                <input type="text" id="expiryDate" name="expiryDate" required>
-            </div>
-            <div class="form-group">
-                <label for="cvv">CVV:</label>
-                <input type="text" id="cvv" name="cvv" required>
-            </div>
-            <div class="form-group">
-                <button type="submit">Subscribe</button>
-            </div>
-        </form>
-    </div>
+        </div>
+</div>
 </body>
 </html>

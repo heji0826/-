@@ -1,6 +1,14 @@
 <%@ include file="../includes/header.jsp" %>
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+    Integer loggedInUserId = (Integer) session.getAttribute("user_id");
+
+    if (loggedInUserId == null) {
+        response.sendRedirect("/web/login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
