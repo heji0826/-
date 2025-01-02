@@ -1,4 +1,4 @@
-<%@ include file="/web/admin/dashboard.jsp" %>
+<%@ include file="./dashboard.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html>
