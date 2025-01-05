@@ -1,12 +1,8 @@
-<%@ include file="../db/db_connection.jsp" %>
 <%@ include file="./dashboard.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
+<jsp:include page="../db/db_connection.jsp" />
 <%
     int userId = Integer.parseInt(request.getParameter("user_id"));
-    if (loggedInUserId == null) {
-        response.sendRedirect("/web/login.jsp");
-        return;
-    }
 %>
 <html>
 <head>
@@ -37,7 +33,7 @@
                             pstmt.setInt(1, userId);
                             rs = pstmt.executeQuery();
                             while (rs.next()) {
-                                boolean is_Admin = rs.getBoolean("is_admin");
+                                boolean is_Admin_ = rs.getBoolean("is_admin");
                 %>
                 <tr>
                     <td><%= rs.getInt("user_id") %></td>
@@ -47,7 +43,7 @@
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td>
                         <%
-                            if (is_Admin) {
+                            if (is_Admin_) {
                                 out.print("관리자");
                             } else {
                                 out.print("일반회원");
@@ -56,7 +52,7 @@
                     </td>
                     <td>
                         <%
-                            if (!is_Admin) {
+                            if (!is_Admin_) {
                         %>
                         <a href="/web/actions/delete_user_action.jsp?user_id=<%= rs.getInt("user_id") %>" class="button">삭제</a>
                         <%

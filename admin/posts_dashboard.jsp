@@ -1,12 +1,6 @@
-<%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ include file="./dashboard.jsp" %> 
-<%
-    if (loggedInUserId == null) {
-        response.sendRedirect("/web/login.jsp");
-        return;
-    }
-%>
+<%@ include file="./dashboard.jsp" %>
+<jsp:include page="../db/db_connection.jsp" />
 <!DOCTYPE html>
 <html>
 <head>

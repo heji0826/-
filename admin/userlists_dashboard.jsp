@@ -1,12 +1,6 @@
-<%@ include file="../db/db_connection.jsp" %>
 <%@ include file="./dashboard.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%
-    if (loggedInUserId == null) {
-        response.sendRedirect("/web/login.jsp");
-        return;
-    }
-%>
+<jsp:include page="../db/db_connection.jsp" />
 <!DOCTYPE html>
 <html>
 <head>
@@ -33,7 +27,7 @@
                         Statement stmt = conn.createStatement();
                         ResultSet rs = stmt.executeQuery("SELECT * FROM users");
                         while (rs.next()) {
-                            boolean is_Admin = rs.getBoolean("is_admin");
+                            boolean is_Admin_ = rs.getBoolean("is_admin");
                 %>
                 <tr>
                     <td><%= rs.getInt("user_id") %></td>
@@ -43,7 +37,7 @@
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td>
                         <%
-                            if (is_Admin) {
+                            if (is_Admin_) {
                                 out.print("관리자");
                             } else {
                                 out.print("일반회원");
@@ -52,7 +46,7 @@
                     </td>
                     <td>
                         <%
-                            if (!is_Admin) {
+                            if (!is_Admin_) {
                         %>
                         <a href="/web/actions/delete_user_action.jsp?userId=<%= rs.getInt("user_id") %>" class="button">삭제</a>
                         <%
