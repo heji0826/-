@@ -1,7 +1,12 @@
 <%@ include file="./dashboard.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="../db/db_connection.jsp" %>
-
+<%
+    if (loggedInUserId == null) {
+        response.sendRedirect("/web/login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +24,7 @@
             <!-- Admin Posts 관리 -->
             <div class="content">
                 <h2>공지사항 작성</h2>
-                <div class="container">
+                <div class="admin-container">
                     <h3>새 공지사항 작성</h3>
                     <form action="../actions/write_post_action.jsp" method="post" enctype="multipart/form-data">
                         <label for="boardType">게시판 유형:</label>

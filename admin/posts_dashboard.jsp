@@ -1,6 +1,12 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ include file="./dashboard.jsp" %> 
+<%
+    if (loggedInUserId == null) {
+        response.sendRedirect("/web/login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -19,7 +25,7 @@
                 </select>
                 <button type="submit">조회</button>
             </form>
-                <table border="1" id="adminPostsTable">
+                <table class="posts-table" id="adminPostsTable">
                     <thead>
                         <tr>
                             <th>번호</th>
@@ -58,7 +64,7 @@
                              <form id="editForm_<%= postId %>" action="../board/edit_post.jsp" method="post">
                                     <input type="hidden" name="id" value="<%= postId %>">
                                     <input type="hidden" name="boardType" value="<%= boardType %>">
-                                    <button type="button" onclick="submitEditForm(<%= postId %>)">수정</button>
+                                    <button type="button" onclick="submitEditForm('<%= postId %>')">수정</button>
                                 </form>
                                 <script>
                                 function submitEditForm(postId) {
@@ -69,7 +75,7 @@
 				<form id="deleteForm_<%= postId %>" action="../actions/delete_post_action.jsp" method="post" style="display: inline-block;">
     <input type="hidden" name="postId" value="<%= postId %>">
     <input type="hidden" name="boardType" value="<%= boardType %>">
-    <button type="button" onclick="confirmDelete(<%= postId %>)">삭제</button>
+    <button type="button" onclick="confirmDelete('<%= postId %>')">삭제</button>
 </form>
 
 <script>
