@@ -20,29 +20,29 @@
 
     if (boardType.equals("admin")) {
         query = "SELECT u.user_id, ap.post_id, ap.title, ap.created_at, u.nickname, ap.content, ap.attachment_path " +
-                "FROM admin_posts ap JOIN users u ON ap.user_id = u.user_id WHERE ap.post_id = " + postId;
+                "FROM admin_posts ap JOIN users u ON ap.user_id = u.user_id WHERE ap.post_id = ?";
     } else if (boardType.equals("vip")) {
          query = "SELECT u.user_id, vp.post_id, vp.title, vp.created_at, u.nickname, vp.content, vp.attachment_path " +
-                "FROM vip_posts vp JOIN users u ON vp.user_id = u.user_id WHERE vp.post_id = " + postId;
+                "FROM vip_posts vp JOIN users u ON vp.user_id = u.user_id WHERE vp.post_id = ?";
         
     } else {
         query = "SELECT u.user_id, up.post_id, up.title, up.created_at, u.nickname, up.content, up.attachment_path " +
-                "FROM user_posts up JOIN users u ON up.user_id = u.user_id WHERE up.post_id = " + postId;
+                "FROM user_posts up JOIN users u ON up.user_id = u.user_id WHERE up.post_id = ?";
     }
 
-    Statement stmt = conn.createStatement();
-    ResultSet rs = stmt.executeQuery(query);
+    PreparedStatement pstmt = conn.prepareStatement(query);
+    pstmt.setInt(1, postId);
+    ResultSet rs = pstmt.executeQuery();
 
     if (!rs.next()) {
         response.sendRedirect("/web/board/error.jsp");
         return;
     }
 
-    if ( boardType.equals("vip") && (rs.getInt("user_id") != loggedInUserId) && Boolean.FALSE.equals(isAdmin)) {
+    if (boardType.equals("vip") && (rs.getInt("user_id") != loggedInUserId) && Boolean.FALSE.equals(isAdmin)) {
         response.sendRedirect("../actions/payment_action.jsp");
         return;
     }
-           
 %>
 <!DOCTYPE html>
 <html lang="ko">
@@ -132,17 +132,19 @@
                         String commentQuery;
                         if (boardType.equals("admin")) {
                             commentQuery = "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
-                                           "FROM admin_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
+                                           "FROM admin_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = ?";
                         } else if (boardType.equals("vip")) {
                             commentQuery = "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
-                                           "FROM vip_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
+                                           "FROM vip_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = ?";
                         } else {
                             commentQuery = "SELECT c.comment_id, c.content, c.created_at, u.nickname, c.user_id " +
-                                           "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = " + postId;
+                                           "FROM user_comments c JOIN users u ON c.user_id = u.user_id WHERE c.post_id = ?";
                         }
             
                         commentQuery += " ORDER BY c.created_at DESC";     
-                        ResultSet commentRs = stmt.executeQuery(commentQuery);
+                        PreparedStatement commentPstmt = conn.prepareStatement(commentQuery);
+                        commentPstmt.setInt(1, postId);
+                        ResultSet commentRs = commentPstmt.executeQuery();
             
                         while (commentRs.next()) {
                             int commentUserId = commentRs.getInt("user_id");
@@ -186,6 +188,7 @@
                     <%
                         }
                         commentRs.close();
+                        commentPstmt.close();
                     %>
                 </tbody>
             </table>
@@ -196,5 +199,5 @@
 </html>
 <%
     rs.close();
-    stmt.close();
+    pstmt.close();
 %>

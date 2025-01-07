@@ -8,9 +8,9 @@
         return;
     }
 
-    Statement stmt = conn.createStatement();
-    String query = "SELECT * FROM users WHERE username = '" + usernameFromSession + "'";
-    ResultSet rs = stmt.executeQuery(query);
+    PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+    pstmt.setString(1, usernameFromSession);
+    ResultSet rs = pstmt.executeQuery();
 %>
 <!DOCTYPE html>
 <html>
@@ -69,5 +69,5 @@
 </html>
 <%
     rs.close();
-    stmt.close();
+    pstmt.close();
 %>

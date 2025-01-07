@@ -24,23 +24,27 @@
     String securityQuestion = request.getParameter("security_question");
     String securityAnswer = request.getParameter("security_answer");
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     try {
         // 사용자 정보 검증
-        String query = "SELECT username FROM users WHERE username = '" + username + 
-                       "' AND security_question = '" + securityQuestion + 
-                       "' AND security_answer = '" + securityAnswer + "'";
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(query);
+        String query = "SELECT username FROM users WHERE username = ? AND security_question = ? AND security_answer = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        pstmt.setString(2, securityQuestion);
+        pstmt.setString(3, securityAnswer);
+        rs = pstmt.executeQuery();
 
         if (rs.next()) {
             // 랜덤 비밀번호 생성
             String newPassword = generateRandomPassword();
 
-            String updateQuery = "UPDATE users SET password = '" + getMD5(newPassword) + "' WHERE username = '" + username + "'";
-            stmt.executeUpdate(updateQuery);
+            String updateQuery = "UPDATE users SET password = ? WHERE username = ?";
+            pstmt = conn.prepareStatement(updateQuery);
+            pstmt.setString(1, getMD5(newPassword));
+            pstmt.setString(2, username);
+            pstmt.executeUpdate();
 
             response.sendRedirect("../find_password.jsp?user_name=" + URLEncoder.encode(username, "UTF-8") + "&new_password=" + URLEncoder.encode(newPassword, "UTF-8"));
         } else {
@@ -51,7 +55,7 @@
         out.println("에러: " + e.getMessage());
     } finally {
         if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();
     }
 %>

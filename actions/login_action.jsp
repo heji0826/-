@@ -9,13 +9,15 @@
     String username = request.getParameter("username");
     String password = request.getParameter("password");
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     try {
-        String query = "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + getMD5(password) + "'";
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(query);
+        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        pstmt.setString(2, getMD5(password));
+        rs = pstmt.executeQuery();
 
         if (rs.next()) {
             int userId = rs.getInt("user_id");
@@ -35,8 +37,7 @@
         out.println("에러: " + e.getMessage());
     } finally {
         if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close(); // 연결 닫기
     }
 %>
-

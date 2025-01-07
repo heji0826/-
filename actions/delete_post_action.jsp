@@ -4,19 +4,20 @@
     int postId = Integer.parseInt(request.getParameter("postId"));
     String boardType = request.getParameter("boardType");
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     try {
         String deleteQuery = "";
         if ("admin".equals(boardType)) {
-            deleteQuery = "DELETE FROM admin_posts WHERE post_id = " + postId;
+            deleteQuery = "DELETE FROM admin_posts WHERE post_id = ?";
         } else if("vip".equals(boardType)){
-            deleteQuery = "DELETE FROM vip_posts WHERE post_id = " + postId;
+            deleteQuery = "DELETE FROM vip_posts WHERE post_id = ?";
         } else {
-            deleteQuery = "DELETE FROM user_posts WHERE post_id = " + postId;
+            deleteQuery = "DELETE FROM user_posts WHERE post_id = ?";
         }
 
-        stmt = conn.createStatement();
-        int rowsAffected = stmt.executeUpdate(deleteQuery);
+        pstmt = conn.prepareStatement(deleteQuery);
+        pstmt.setInt(1, postId);
+        int rowsAffected = pstmt.executeUpdate();
 
         if (rowsAffected > 0) {
             // 게시물 삭제 후 게시판 목록으로 리디렉션
@@ -33,6 +34,6 @@
     } catch (Exception e) {
         out.println("게시물 삭제 중 오류 발생: " + e.getMessage());
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
     }
 %>

@@ -55,7 +55,6 @@
                 <tbody>
                     <%
                         if (conn != null) {
-                            Statement stmt = conn.createStatement();
                             String query = "SELECT ap.post_id, ap.title, ap.created_at, u.nickname " +
                                            "FROM vip_posts ap " +
                                            "JOIN users u ON ap.user_id = u.user_id ";
@@ -64,12 +63,16 @@
                             String searchField = request.getParameter("searchField");
                             String search = request.getParameter("search");
                             if (searchField != null && search != null && !search.trim().isEmpty()) {
-                                query += "WHERE " + searchField + " LIKE '%" + search + "%' ";
+                                query += "WHERE " + searchField + " LIKE ? ";
                             }
             
                             // 정렬 조건 추가
                             query += "ORDER BY ap.created_at DESC";
-                            ResultSet rs = stmt.executeQuery(query);
+                            PreparedStatement pstmt = conn.prepareStatement(query);
+                            if (searchField != null && search != null && !search.trim().isEmpty()) {
+                                pstmt.setString(1, "%" + search + "%");
+                            }
+                            ResultSet rs = pstmt.executeQuery();
                             while (rs.next()) {
                     %>
                     <tr>
@@ -82,7 +85,7 @@
                     <%
                             }
                             rs.close();
-                            stmt.close();
+                            pstmt.close();
                         } else {
                     %>
                     <tr>

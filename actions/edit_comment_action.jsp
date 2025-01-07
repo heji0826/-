@@ -10,16 +10,17 @@
     String commentTable = "user_comments";
     if ("admin".equals(boardType)) {
         commentTable = "admin_comments";
-    }
-    else if("vip".equals(boardType)){
+    } else if ("vip".equals(boardType)) {
         commentTable = "vip_comments";
     }
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     try {
-        String updateQuery = "UPDATE " + commentTable + " SET content = '" + content + "' WHERE comment_id = " + commentId;
-        stmt = conn.createStatement();
-        stmt.executeUpdate(updateQuery);
+        String updateQuery = "UPDATE " + commentTable + " SET content = ? WHERE comment_id = ?";
+        pstmt = conn.prepareStatement(updateQuery);
+        pstmt.setString(1, content);
+        pstmt.setInt(2, commentId);
+        pstmt.executeUpdate();
         
         // 댓글 수정 후 리디렉션 (원래 페이지로 돌아가도록 처리)
         response.sendRedirect(request.getHeader("Referer"));
@@ -27,7 +28,7 @@
         e.printStackTrace();
         out.println("수정 중 오류가 발생했습니다.");
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();
     }
 %>

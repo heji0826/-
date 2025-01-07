@@ -4,20 +4,20 @@
     request.setCharacterEncoding("UTF-8");
     String username = (String) session.getAttribute("username");
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
 
     try {
-        String query = "UPDATE users SET is_vip = '1'";
-        query += " WHERE username = '" + username + "'";
+        String query = "UPDATE users SET is_vip = '1' WHERE username = ?";
 
-        stmt = conn.createStatement();
-        stmt.executeUpdate(query);
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        pstmt.executeUpdate();
         session.setAttribute("is_vip", true);
         response.sendRedirect("../board/vip_board.jsp");
     } catch (Exception e) {
         out.println("에러: " + e.getMessage());
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();
     }
 %>

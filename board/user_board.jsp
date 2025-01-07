@@ -45,20 +45,23 @@
                 </thead>
                 <tbody>
                     <%
-                        Statement stmt = null;
+                        PreparedStatement pstmt = null;
                         ResultSet rs = null;
                         try {
                             if (conn != null) {
-                                stmt = conn.createStatement();
                                 String searchField = request.getParameter("searchField");
                                 String search = request.getParameter("search");
                                 String query = "SELECT p.post_id, p.title, u.nickname, p.created_at FROM user_posts p " +
                                                "JOIN users u ON p.user_id = u.user_id";
                                 if (searchField != null && search != null && !search.trim().isEmpty()) {
-                                    query += " WHERE " + searchField + " LIKE '%" + search + "%'";
+                                    query += " WHERE " + searchField + " LIKE ?";
                                 }
                                 query += " ORDER BY p.created_at DESC";
-                                rs = stmt.executeQuery(query);
+                                pstmt = conn.prepareStatement(query);
+                                if (searchField != null && search != null && !search.trim().isEmpty()) {
+                                    pstmt.setString(1, "%" + search + "%");
+                                }
+                                rs = pstmt.executeQuery();
                                 while (rs.next()) {
                     %>
                     <tr>
@@ -81,7 +84,7 @@
                             out.println("<tr><td colspan='5' class='error-message'>오류: " + e.getMessage() + "</td></tr>");
                         } finally {
                             if (rs != null) rs.close();
-                            if (stmt != null) stmt.close();
+                            if (pstmt != null) pstmt.close();
                         }
                     %>
                 </tbody>

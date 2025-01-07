@@ -28,12 +28,13 @@
     }
 
     // 사용자 ID 조회 (데이터베이스에서 user_id를 가져옴)
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
-        String query = "SELECT user_id FROM users WHERE username = '" + username + "'";
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(query);
+        String query = "SELECT user_id FROM users WHERE username = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        rs = pstmt.executeQuery();
 
         if (rs.next()) {
             userId = rs.getInt("user_id");
@@ -45,7 +46,7 @@
         out.println("사용자 정보 조회 오류: " + e.getMessage());
         return;
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (rs != null) rs.close();
     }
 
@@ -84,19 +85,20 @@
         // 게시물 정보 DB에 삽입
         String insertQuery = "";
         if ("admin".equals(boardType)) {
-            insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
-                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
+            insertQuery = "INSERT INTO admin_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, NOW(), NOW(), ?)";
         } else if ("user".equals(boardType)) {
-            insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
-                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
+            insertQuery = "INSERT INTO user_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, NOW(), NOW(), ?)";
         } else {
-            insertQuery = "INSERT INTO vip_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES ('" +
-                           title + "', '" + content + "', '" + fileName + "', NOW(), NOW(), " + userId + ")";
+            insertQuery = "INSERT INTO vip_posts (title, content, attachment_path, created_at, updated_at, user_id) VALUES (?, ?, ?, NOW(), NOW(), ?)";
         }
 
         // INSERT 쿼리 실행
-        stmt = conn.createStatement();
-        stmt.executeUpdate(insertQuery);
+        pstmt = conn.prepareStatement(insertQuery);
+        pstmt.setString(1, title);
+        pstmt.setString(2, content);
+        pstmt.setString(3, fileName);
+        pstmt.setInt(4, userId);
+        pstmt.executeUpdate();
 
         // 게시물 등록 후 리디렉션
         if ("admin".equals(boardType)) {
@@ -109,7 +111,7 @@
     } catch (Exception e) {
         out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류: " + e.getMessage());
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();
     }
 %>

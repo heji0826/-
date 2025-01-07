@@ -13,13 +13,14 @@
     String securityAnswer = request.getParameter("security_answer");
     String newPassword = request.getParameter("password");
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     try {
-        String checkPasswordQuery = "SELECT password FROM users WHERE username = '" + username + "'";
-        stmt = conn.createStatement();
-        rs = stmt.executeQuery(checkPasswordQuery);
+        String checkPasswordQuery = "SELECT password FROM users WHERE username = ?";
+        pstmt = conn.prepareStatement(checkPasswordQuery);
+        pstmt.setString(1, username);
+        rs = pstmt.executeQuery();
 
         if (rs.next()) {
             String db_Password = rs.getString("password");
@@ -32,23 +33,31 @@
             return;
         }
 
-        String query = "UPDATE users SET name = '" + name + 
-                       "', email = '" + email + 
-                       "', nickname = '" + nickname + 
-                       "', phone = '" + phone + 
-                       "', security_question = '" + securityQuestion + 
-                       "', security_answer = '" + securityAnswer + "'";
+        String query = "UPDATE users SET name = ?, email = ?, nickname = ?, phone = ?, security_question = ?, security_answer = ?";
         if (newPassword != null && !newPassword.isEmpty()) {
-            query += ", password = '" + getMD5(newPassword) + "'";
+            query += ", password = ?";
         }
-        query += " WHERE username = '" + username + "'";
-        stmt.executeUpdate(query);
+        query += " WHERE username = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, name);
+        pstmt.setString(2, email);
+        pstmt.setString(3, nickname);
+        pstmt.setString(4, phone);
+        pstmt.setString(5, securityQuestion);
+        pstmt.setString(6, securityAnswer);
+        if (newPassword != null && !newPassword.isEmpty()) {
+            pstmt.setString(7, getMD5(newPassword));
+            pstmt.setString(8, username);
+        } else {
+            pstmt.setString(7, username);
+        }
+        pstmt.executeUpdate();
         out.println("<script>alert('정보가 성공적으로 수정되었습니다.'); location.href='../profile.jsp';</script>");
     } catch (Exception e) {
         out.println("<script>alert('오류 발생: " + e.getMessage() + "'); history.back();</script>");
     } finally {
         if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
         if (conn != null) conn.close();
     }
 %>

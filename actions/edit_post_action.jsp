@@ -25,12 +25,13 @@
         return;
     }
 
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
     try {
-        stmt = conn.createStatement();
-        String query = "SELECT user_id FROM users WHERE username = '" + username + "'";
-        rs = stmt.executeQuery(query);
+        String query = "SELECT user_id FROM users WHERE username = ?";
+        pstmt = conn.prepareStatement(query);
+        pstmt.setString(1, username);
+        rs = pstmt.executeQuery();
 
         if (rs.next()) {
             userId = rs.getInt("user_id");
@@ -43,7 +44,7 @@
         return;
     } finally {
         if (rs != null) rs.close();
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
     }
 
     DiskFileItemFactory factory = new DiskFileItemFactory();
@@ -78,33 +79,35 @@
             }
         }
 
-        stmt = conn.createStatement();
         String updateQuery;
         if (fileName == null) {
             if ("admin".equals(boardType)) {
-                updateQuery = "UPDATE admin_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW() WHERE post_id = " + postId;
+                updateQuery = "UPDATE admin_posts SET title = ?, content = ?, updated_at = NOW() WHERE post_id = ?";
             } else if("vip".equals(boardType)) {
-                updateQuery = "UPDATE vip_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW() WHERE post_id = " + postId;
+                updateQuery = "UPDATE vip_posts SET title = ?, content = ?, updated_at = NOW() WHERE post_id = ?";
             } else {
-                updateQuery = "UPDATE user_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW() WHERE post_id = " + postId;
+                updateQuery = "UPDATE user_posts SET title = ?, content = ?, updated_at = NOW() WHERE post_id = ?";
             }
         } else {
             if ("admin".equals(boardType)) {
-                updateQuery = "UPDATE admin_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW(), attachment_path = '" + fileName + "' WHERE post_id = " + postId;
+                updateQuery = "UPDATE admin_posts SET title = ?, content = ?, updated_at = NOW(), attachment_path = ? WHERE post_id = ?";
             } else if("vip".equals(boardType)) {
-                updateQuery = "UPDATE vip_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW(), attachment_path = '" + fileName + "' WHERE post_id = " + postId;
+                updateQuery = "UPDATE vip_posts SET title = ?, content = ?, updated_at = NOW(), attachment_path = ? WHERE post_id = ?";
             } else {
-                updateQuery = "UPDATE user_posts SET title = '" + title + "', content = '" + content +
-                              "', updated_at = NOW(), attachment_path = '" + fileName + "' WHERE post_id = " + postId;
+                updateQuery = "UPDATE user_posts SET title = ?, content = ?, updated_at = NOW(), attachment_path = ? WHERE post_id = ?";
             }
         }
 
-        stmt.executeUpdate(updateQuery);
+        pstmt = conn.prepareStatement(updateQuery);
+        pstmt.setString(1, title);
+        pstmt.setString(2, content);
+        if (fileName == null) {
+            pstmt.setInt(3, postId);
+        } else {
+            pstmt.setString(3, fileName);
+            pstmt.setInt(4, postId);
+        }
+        pstmt.executeUpdate();
 
         response.sendRedirect("/web/board/post.jsp?id=" + postId + "&boardType=" + boardType);
     } catch (Exception e) {
@@ -117,6 +120,6 @@
         out.println("파일 업로드 또는 게시물 등록에 실패했습니다. 오류 스택 트레이스:");
         out.println(stackTrace);
     } finally {
-        if (stmt != null) stmt.close();
+        if (pstmt != null) pstmt.close();
     }
 %>

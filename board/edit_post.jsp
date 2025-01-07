@@ -2,7 +2,7 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
-    Statement stmt = null;
+    PreparedStatement pstmt = null;
     ResultSet rs = null;
 
     int postId = Integer.parseInt(request.getParameter("id"));
@@ -10,15 +10,16 @@
 
     String query = "";
     if ("admin".equals(boardType)) {
-        query = "SELECT * FROM admin_posts WHERE post_id = " + postId;
+        query = "SELECT * FROM admin_posts WHERE post_id = ?";
     } else if ("vip".equals(boardType)) {
-        query = "SELECT * FROM vip_posts WHERE post_id = " + postId;
+        query = "SELECT * FROM vip_posts WHERE post_id = ?";
     } else {
-        query = "SELECT * FROM user_posts WHERE post_id = " + postId;
+        query = "SELECT * FROM user_posts WHERE post_id = ?";
     }
 
-    stmt = conn.createStatement();
-    rs = stmt.executeQuery(query);
+    pstmt = conn.prepareStatement(query);
+    pstmt.setInt(1, postId);
+    rs = pstmt.executeQuery();
     if (!rs.next()) {
         response.sendRedirect("/web/board/error.jsp");
         return;
@@ -57,5 +58,5 @@
 </html>
 <%
     if (rs != null) rs.close();
-    if (stmt != null) stmt.close();
+    if (pstmt != null) pstmt.close();
 %>

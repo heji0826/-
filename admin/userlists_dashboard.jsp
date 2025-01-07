@@ -21,18 +21,19 @@
                     <th>유형</th>
                     <th>회원 삭제</th>
                     <th>상세 정보</th>
-            </tr>
+                </tr>
                 <%
                     if (conn != null) {
-                        Statement stmt = conn.createStatement();
-                        ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+                        String query = "SELECT * FROM users";
+                        PreparedStatement pstmt = conn.prepareStatement(query);
+                        ResultSet rs = pstmt.executeQuery();
                         while (rs.next()) {
                             boolean is_Admin_ = rs.getBoolean("is_admin");
                 %>
                 <tr>
                     <td><%= rs.getInt("user_id") %></td>
-            <td><%= rs.getString("username") %></td>
-            <td><%= rs.getString("nickname") %></td>
+                    <td><%= rs.getString("username") %></td>
+                    <td><%= rs.getString("nickname") %></td>
                     <td><%= rs.getString("email") %></td>
                     <td><%= rs.getTimestamp("created_at") %></td>
                     <td>
@@ -60,11 +61,11 @@
                     <td>
                         <a href="/web/admin/user_info.jsp?user_id=<%= rs.getInt("user_id") %>" class="button">조회</a>
                     </td> 
-            </tr>
+                </tr>
                 <%
                         }
                         rs.close();
-                        stmt.close();
+                        pstmt.close();
                     } else {
                 %>
                 <tr>

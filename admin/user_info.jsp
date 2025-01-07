@@ -121,19 +121,19 @@
                             rs = pstmt.executeQuery();
         
                             while (rs.next()) {
-                                %>
-                                <tr>
-                                    <td><%= rs.getInt("post_id") %></td>
-                                    <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin"><%= rs.getString("title") %></a></td>
-                                    <td><%= rs.getTimestamp("created_at") %></td>
-                                    <td><%= rs.getTimestamp("updated_at") %></td>
-                                    <td>채용공고 게시판</td>
-                                    <td>
-                                        <a href="/web/board/edit_post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">수정</a>
-                                        <a href="../actions/delete_post_action.jsp?postId=<%= rs.getInt("post_id") %>&board_type=admin">삭제</a>
-                                    </td>
-                                </tr>
-                                <%
+                %>
+                <tr>
+                    <td><%= rs.getInt("post_id") %></td>
+                    <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin"><%= rs.getString("title") %></a></td>
+                    <td><%= rs.getTimestamp("created_at") %></td>
+                    <td><%= rs.getTimestamp("updated_at") %></td>
+                    <td>채용공고 게시판</td>
+                    <td>
+                        <a href="/web/board/edit_post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">수정</a>
+                        <a href="../actions/delete_post_action.jsp?postId=<%= rs.getInt("post_id") %>&board_type=admin">삭제</a>
+                    </td>
+                </tr>
+                <%
                             }
                             rs.close();
                             pstmt.close();
@@ -199,8 +199,8 @@
                 <td><%= rs.getString("content") %></td>
                 <td><%= rs.getTimestamp("created_at") %></td>
                 <td><%= rs.getTimestamp("updated_at") %></td>
-            <td>    
-                <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=admin">삭제</a>
+                <td>    
+                    <a href="/web/actions/delete_comment_action.jsp?id=<%= rs.getInt("comment_id") %>&boardType=admin">삭제</a>
                 </td>
                 <td><a href="/web/board/post.jsp?id=<%= rs.getInt("post_id") %>&boardType=admin">조회</a></td>
             </tr>
