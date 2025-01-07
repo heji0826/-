@@ -8,6 +8,7 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.Arrays, java.util.List" %>
 <%
     request.setCharacterEncoding("UTF-8");
 
@@ -54,6 +55,9 @@
     DiskFileItemFactory factory = new DiskFileItemFactory();
     ServletFileUpload upload = new ServletFileUpload(factory);
 
+    // 허용할 파일 확장자 목록
+    List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "pdf", "docx", "xlsx");
+
     try {
         // 파일 업로드 처리
         List<FileItem> items = upload.parseRequest(request);
@@ -72,6 +76,12 @@
                     continue;  // 파일이 없는 경우 다음 아이템으로 넘어감
                 } else {
                     fileName = new File(item.getName()).getName();
+                    String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+                    if (!allowedExtensions.contains(fileExtension)) {
+                        throw new Exception("허용되지 않은 파일 형식입니다: " + fileExtension);
+                    }
+
                     File uploadDir = new File(getServletContext().getRealPath("/") + "uploads/");
                     if (!uploadDir.exists()) {
                         uploadDir.mkdirs();
