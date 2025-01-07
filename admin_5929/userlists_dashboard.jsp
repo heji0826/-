@@ -59,7 +59,7 @@
                         %>
                     </td>
                     <td>
-                        <a href="/web/admin/user_info.jsp?user_id=<%= rs.getInt("user_id") %>" class="button">조회</a>
+                        <a href="/web/admin_5929/user_info.jsp?user_id=<%= rs.getInt("user_id") %>" class="button">조회</a>
                     </td> 
                 </tr>
                 <%

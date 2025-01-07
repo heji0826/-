@@ -27,7 +27,7 @@
         <a href="/web/board/admin_board.jsp">취업 정보 게시판</a>
         <a href="/web/board/vip_board.jsp">자소서 첨삭</a>
         <% if (isAdmin != null && isAdmin) { %>
-            <a href="/web/admin/main_dashboard.jsp">관리자 페이지</a>
+            <a href="/web/admin_5929/main_dashboard.jsp">관리자 페이지</a>
         <% } %>
     </nav>
     <div class="user-menu">
