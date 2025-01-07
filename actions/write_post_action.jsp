@@ -65,8 +65,17 @@
             if (item.isFormField()) {
                 if ("title".equals(item.getFieldName())) {
                     title = item.getString("UTF-8");
+                    // 정규식 검증: script 태그 차단
+                    if (title.matches(".*<\\s*script\\s*>.*") || title.matches(".*<\\s*/\\s*script\\s*>.*")) {
+                        throw new Exception("제목에 허용되지 않은 태그가 포함되어 있습니다.");
+                    }
+                    
                 } else if ("content".equals(item.getFieldName())) {
                     content = item.getString("UTF-8");
+                    // 정규식 검증: script 태그 차단
+                    if (content.matches(".*<\\s*script\\s*>.*") || content.matches(".*<\\s*/\\s*script\\s*>.*")) {
+                        throw new Exception("내용에 허용되지 않은 태그가 포함되어 있습니다.");
+                    }
                 } else if ("boardType".equals(item.getFieldName())) {
                     boardType = item.getString("UTF-8");
                 }
