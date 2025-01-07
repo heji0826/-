@@ -15,6 +15,11 @@
     PreparedStatement pstmt = null;
 
     try {
+        // 비밀번호 규칙 검증: 최소 10자리, 3가지 종류 문자 조합
+        if (!password.matches("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*()_+\\-={}\\[\\]:;'<>.,?]).{10,}$")) {
+            throw new Exception("비밀번호는 최소 10자리 이상이어야 하며, 영문, 숫자, 특수문자 중 3가지 조합을 포함해야 합니다.");
+        }
+
         String query = "INSERT INTO users (name, username, password, email, nickname, phone, security_question, security_answer) " +
                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         pstmt = conn.prepareStatement(query);
