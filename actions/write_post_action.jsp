@@ -1,3 +1,4 @@
+<%@ page import="java.util.UUID" %>
 <%@ page import="org.apache.commons.fileupload.*" %>
 <%@ page import="org.apache.commons.fileupload.disk.*" %>
 <%@ page import="org.apache.commons.fileupload.servlet.*" %>
@@ -6,11 +7,20 @@
 <%@ page import="org.apache.commons.fileupload.FileItem" %>
 <%@ page import="java.io.StringWriter" %>
 <%@ page import="java.io.PrintWriter" %>
+<%@ page import="java.util.Arrays" %>
 <%@ include file="../db/db_connection.jsp" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.Arrays, java.util.List" %>
 <%
     request.setCharacterEncoding("UTF-8");
+
+    // CSRF 토큰 검증
+    String csrfToken = request.getParameter("csrfToken");
+    String sessionCsrfToken = (String) session.getAttribute("csrfToken");
+    if (csrfToken == null || !csrfToken.equals(sessionCsrfToken)) {
+        response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid CSRF token");
+        return;
+    }
 
     // 폼 값들
     String title = null;

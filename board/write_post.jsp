@@ -20,6 +20,7 @@
             <h1>게시글 작성</h1>
             <form action="../actions/write_post_action.jsp" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="boardType" value="<%= boardType %>">
+                <input type="hidden" name="csrfToken" value="<%= csrfToken %>">
 
                 <label for="title">제목:</label>
                 <input type="text" id="title" name="title" required><br>

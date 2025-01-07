@@ -1,9 +1,11 @@
 <%@ include file="../db/db_connection.jsp" %>
 <%@ include file="../includes/md5.jsp" %>
+<%@ page import="java.util.UUID" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%
     String username = request.getParameter("username");
     String password = request.getParameter("password");
+    String csrfToken = UUID.randomUUID().toString();
 
     PreparedStatement pstmt = null;
     ResultSet rs = null;
@@ -53,6 +55,7 @@
             session.setAttribute("user_id", userId);
             session.setAttribute("username", username);
             session.setAttribute("is_admin", isAdmin);
+            session.setAttribute("csrfToken", csrfToken);
             response.sendRedirect("../index.jsp");
         } else {
             // 로그인 실패
