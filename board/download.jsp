@@ -4,13 +4,28 @@
 <%@ page contentType="application/octet-stream" %>
 <%
     String fileName = request.getParameter("file");
-    if (fileName != null && !fileName.isEmpty()) {
-        fileName = URLDecoder.decode(fileName, "UTF-8");
-        String filePath = application.getRealPath("/uploads/") + fileName;
-        log(filePath);
-        File file = new File(filePath);
 
+    if (fileName != null && !fileName.isEmpty()) {
+        // 파일명 디코딩
+        fileName = URLDecoder.decode(fileName, "UTF-8");
+
+        // 다운로드 허용 디렉터리 설정 (화이트리스트)
+        String allowedDir = application.getRealPath("/uploads/");
+        log(allowedDir);
+
+        // 다운로드 파일의 전체 경로 생성
+        File file = new File(allowedDir, fileName);
+
+        // 경로 조작 방지: 파일이 허용된 디렉터리 내에 있는지 검증
+        if (!file.getCanonicalPath().startsWith(new File(allowedDir).getCanonicalPath())) {
+            response.setContentType("text/html; charset=UTF-8");
+            out.println("잘못된 파일 요청입니다. 다운로드가 허용되지 않은 경로입니다.");
+            return;
+        }
+
+        // 파일 존재 여부 확인
         if (file.exists() && file.isFile()) {
+            // 응답 헤더 설정
             response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(file.getName(), "UTF-8") + "\"");
             response.setContentType("application/octet-stream");
             response.setContentLengthLong(file.length());

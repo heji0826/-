@@ -31,7 +31,17 @@
                 out.println("<p>계정이 잠겼습니다. " + (LOCK_TIME / 60000) + "분 후에 다시 시도하세요.</p>");
                 return;
             }
+        
+            // 충분한 시간이 경과한 경우 실패 횟수 초기화
+            if ((currentTime - lastAttempt) >= LOCK_TIME) {
+                String resetAttemptsQuery = "UPDATE users SET login_attempts = 0, last_attempt = NULL WHERE username = ?";
+                PreparedStatement resetPstmt = conn.prepareStatement(resetAttemptsQuery);
+                resetPstmt.setString(1, username);
+                resetPstmt.executeUpdate();
+                resetPstmt.close();
+            }
         }
+        
         
 
         // 2. 로그인 시도
